@@ -1,0 +1,39 @@
+<HTML><HEAD><TITLE>Cash Status</TITLE>
+<link href='assets/global/plugins/font-awesome/css/font-awesome.min.css' rel='stylesheet' type='text/css'/></HEAD>
+<style> .tools{ position:absolute; right:10px;  top:10px; width:70px } .tools i{ float:left; margin-left:10px; font-size:20px;  cursor:pointer;} </style>
+
+<BODY bgcolor="#c0c0c0">
+<div class=tools> <i class='fa fa-bar-chart' title='Plot Cash'  onClick="window.open('Plot?data=CASH&x=all&team=sasmoothoperator', 'CASH', 'height=550,width=550,scrollbars')"></i> <i class='fa fa-refresh' title=Refresh onclick=openCashDialog('sasmoothoperator');></i>  </div> 
+<div style='margin-top:40px;margin-bottom: 20px;height: 40px;'><font size=+1 color=navy>
+<center>Littlefield Technologies - Sources and Uses of Cash</center><br><br>
+</font></div>
+<div style='width:400px;margin:0 auto;'><table cellpadding=3 border style='margin: 0 auto;' >
+<TR><TD bgColor='#c8ffc8' align=center><B>Description</B></TD>
+<TD bgColor='#c8ffc8' align=center><B>Amount($)</B></TD></TR>
+<TR><TD>Starting Cash</TD>
+ <TD align=RIGHT><font color='Blue'>1,000,000</font></TD></TR>
+<TR><TD bgColor='#c8c8ff'><I>Cash Sources</I></TD>
+ <TD bgColor='#c8c8ff'>.</TD></TR>
+<TR><TD> revenue</TD>
+<TD align=RIGHT><font color='Blue'>84,132</font></TD></TR>
+<TR><TD> interest</TD>
+<TD align=RIGHT><font color='Blue'>12,085</font></TD></TR>
+<TR><TD bgColor='#c8c8ff'><I>Cash Uses</I></TD>
+ <TD bgColor='#c8c8ff'>.</TD></TR>
+<TR><TD>raw materials holding</TD>
+<TD align=RIGHT><font color='Red'>16,706</font></TD></TR>
+<TR><TD>materials purchases</TD>
+<TD align=RIGHT><font color='Red'>365,000</font></TD></TR>
+<TR><TD bgcolor='#ffffc8'><B>Cash Balance</B>
+  <TD  bgcolor='#ffffc8' align=RIGHT>
+  <font color='Blue'>714,511</font></TD></TR>
+<TR><TD>Debt</TD>
+<TD align=RIGHT><font color='Blue'>0</font></TD></TR>
+<TR><TD><B>Cash on Hand</B></TD>
+<TD align=RIGHT><font color='Blue'>714,511</font></TD></TR>
+</table></div><br>
+<form style='text-align: center;margin-top: 18px;'>
+<input type=button value='change debt' name='debt'
+onClick="window.open('LoanForm','loanform','height=550,width=550,scrollbars')">
+</form>
+</BODY></HTML>
