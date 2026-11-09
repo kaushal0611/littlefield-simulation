@@ -115,9 +115,11 @@ def build(runs: list[dict], hours: float, now: datetime) -> str:
         out += ["", "*Where we stand*",
                 f"- Game day *{day:.1f}* of 300 (1 game day = about 29 real minutes). "
                 f"Moved {day - day0:+.1f} days in this window.",
-                f"- Cash *${cash:,.0f}* ({dcash:+,.0f} in this window). Our final score is the cash on day 300.",
-                f"- Debt *${debt:,.0f}*" + (" (loans cost 20% a year plus a 5% fee; the bot repays when cash allows)"
-                                             if debt else "")]
+                f"- Net cash *${cash - debt:,.0f}* (cash on hand ${cash:,.0f} minus debt ${debt:,.0f}). "
+                "This is what the leaderboard ranks, and our final score on day 300.",
+                f"- Cash on hand changed {dcash:+,.0f} in this window."]
+        if debt:
+            out.append("- Loans cost 20% a year plus a 5% fee; the bot repays when cash allows.")
         # bot status on its own line
         if h["edits"] == "on":
             out.append(":white_check_mark: *Bot status:* connected and able to change settings.")
