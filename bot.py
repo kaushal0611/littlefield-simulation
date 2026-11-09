@@ -114,7 +114,9 @@ def guard(acts, obs, cfg, state=None):
 def execute(client, snap, a):
     c = snap.controls
     if a.kind in ("buy", "sell"):
-        return client.submit(c[f"count{a.station}"], a.value)
+        ctl = c[f"count{a.station}"]
+        # the station form's count includes machines still being installed
+        return client.submit(ctl, a.value + (snap.on_order.get(a.station, 0) if ctl.fn == "form" else 0))
     if a.kind in ("rop", "roq", "contract", "wip", "rule", "lots"):
         if a.kind not in c:
             raise GameError(f"no '{a.kind}' control on the page")
