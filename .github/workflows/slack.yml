@@ -1,0 +1,28 @@
+name: slack-summary
+
+on:
+  schedule:
+    - cron: "7 */3 * * *"       # every 3 hours (UTC); change "*/3" to "*/1", "*/6" etc. and match summary_hours in config.yaml
+  workflow_dispatch:
+    inputs:
+      hours:
+        description: "Window in hours (blank = summary_hours from config.yaml)"
+        required: false
+        default: ""
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests pyyaml
+      - name: Post summary
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -n "${{ inputs.hours }}" ]; then python scripts/slack_summary.py --hours "${{ inputs.hours }}";
+          else python scripts/slack_summary.py; fi

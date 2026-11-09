@@ -35,6 +35,7 @@ jobs:
           LF_INSTITUTION: iimb
           PAUSE: ${{ vars.PAUSE }}
           DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || vars.DRY_RUN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python bot.py
       - name: Save state and log
         if: always()
