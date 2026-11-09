@@ -53,3 +53,9 @@
 2026-11-09T18:04:53+00:00 day 54.0 cash $753,517 debt $600,000 machines {1: 3, 2: 1, 3: 1} on-order {1: 1, 2: 3, 3: 2} inv 7740 rop/roq 5640/5040 contract 1 wip 8 rule pri4 edits=on
   stats: lots=1 jobs_in=0.00 jobs_out=16.00 lead=0.00 rev=0.00 jobq=0.00 q1=27.32 q2=15875.76 q3=0.00 u1=0.37 u2=1.00 u3=0.00
   no changes needed
+2026-11-09T18:14:53+00:00 day 54.0 cash $753,517 debt $600,000 machines {1: 4, 2: 4, 3: 3} on-order {1: 0, 2: 0, 3: 0} inv 7740 rop/roq 5640/5040 contract 1 wip 8 rule pri4 edits=on
+  stats: lots=1 jobs_in=0.00 jobs_out=16.00 lead=0.00 rev=0.00 jobq=0.00 q1=27.32 q2=15875.76 q3=0.00 u1=0.37 u2=1.00 u3=0.00
+  OK   wip -> 11  (μ 18.6 jobs/d x 0.6d) |  Orders Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Maximum WIP limit set to 11 jobs. 
+  OK   buy S1 -> 7  (want 12 (λplan 47.1/d, backlog 2h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 3 machines were purchased for station 1 
+  OK   buy S2 -> 6  (want 11 (λplan 47.1/d, backlog 574h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 2 machines were purchased for station 2 
+  OK   buy S3 -> 4  (want 6 (λplan 47.1/d, backlog 322h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 1 machine was purchased for station 3 
