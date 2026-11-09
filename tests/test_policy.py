@@ -57,3 +57,23 @@ def test_policy_robust_to_demand_shape():
         fn = lambda t, k=k: demand_curve(t) * k
         r = st.mean(run_season(seed=s, cfg={"allow_loans": True}, demand_fn=fn)[0].net_cash for s in range(2))
         assert r > 1_200_000
+
+
+def test_guard_safety_rails():
+    o = day50_obs()
+    o.machines = {1: 10, 2: 6, 3: 5}
+    cfg = {"max_spend_per_run": 600000, "min_machines": {1: 3, 2: 1, 3: 1}, "no_sell_before_day": 200,
+           "allowed_contracts": [1, 2], "min_wip": 8, "max_sell_per_run": 1}
+    # no sales before day 200, no contract 3, no lot splitting, WIP floor
+    o.day = 150
+    out = guard([Action("sell", 1, station=1), Action("contract", 3), Action("lots", 5), Action("wip", 2)], o, cfg)
+    assert not any(a.kind in ("sell", "contract", "lots") for a in out)
+    assert [a.value for a in out if a.kind == "wip"] == [8]
+    # after day 200: one machine at a time, never below the starting fleet, one sale per station per day
+    o.day = 250
+    out = guard([Action("sell", 1, station=1), Action("sell", 0, station=2)], o, cfg, {})
+    assert [(a.station, a.value) for a in out] == [(1, 9), (2, 5)]
+    o.machines = {1: 3, 2: 1, 3: 5}
+    assert guard([Action("sell", 1, station=1), Action("sell", 0, station=2)], o, cfg, {}) == []
+    o.machines = {1: 10, 2: 6, 3: 5}
+    assert guard([Action("sell", 5, station=1)], o, cfg, {"last_sell_day": {"1": 249.6}}) == []
