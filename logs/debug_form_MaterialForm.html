@@ -1,0 +1,22 @@
+<HTML><TITLE>Materials Form</TITLE>
+<BODY>
+<font size=+1 color='Navy'>
+Littlefield Technologies -
+</font>
+<center>MATERIALS FORM</center><HR>
+<I> Please select a value for the following control variables... </I>
+<form name='mtrlForm' action='MaterialForm' method=POST>
+<P><B>Reorder Point:</B>
+<input type=text size=6 maxlength=6 name='point' value='25'>
+  batches of 60 kits
+<P><B>Order Quantity:</B>
+<input type=text size=6 maxlength=6 name='quant' value='120'>
+ batches of 60 kits
+<P><input type='submit' value='ok' >
+<input type='hidden' value='ok' name='submit'>
+<input type='button' value='cancel' onClick="window.close()">
+<input type='hidden' value='cancel' name='cancel' >
+</form>
+<P> You may only change one parameter at a time
+<P> Only integer values will be recognized
+</body></html>

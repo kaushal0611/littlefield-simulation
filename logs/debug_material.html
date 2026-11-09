@@ -1,0 +1,75 @@
+<HTML> <head> <TITLE>Material Menu</TITLE>
+<style> input[type=button], input[type=submit]{ text-transform: capitalize;} .tools{ top:20px!important;} p{line-height:25px!important;} .newUI{display:none;} .oldUI{margin:0px;padding:0px;}</style>
+</head> <BODY>
+<h2 class='pageTitle' style='margin-top:15px;'>Littlefield Technologies - MATERIALS MENU</h2>
+<P style='line-height:25px;padding:0px;margin:0px;'><B> Name: </B>sasmoothoperator
+<BR><B>Unit Cost: </B> $ 10.0
+<BR><B>Order Cost: </B> $ 1000.0
+<BR><B>Lead Time:</B> 4 day(s)
+<div class='newUI'>
+<div class='newUILabel'>Reorder Point:</div> <div id='reorderPointValue' class='newUILabelValue floatleft ml10'>1,500 kits
+( 25 batches of 60 )
+</div>
+<input type='button' id='reorderPointFormEdit' onclick='showReorderPointForm()' class='floatleft ml10 buttonStyle blue change' value='Change'/>
+<form class='floatleft ml10' id='reorderPointForm'>
+<input type='number' max='999999' min="1" step="1" oninput="validity.valid||(value='');" id='reorderPoint' value='1500' style='width:100px;'/> 
+kits
+<input type='button' class="buttonStyle ml10 green"  onclick='updateMaterialValue("MaterialForm","1500","ORDERPOINT","reorderPoint","reorderPointForm","Change order point to ","kits","0","text")' value='Confirm'/>
+<input type='button' class="buttonStyle  red"  onclick='hideReorderPointForm("1500")' value='Cancel'/>
+</form>
+<div class='clearboth'></div>
+</div>
+<div class='newUI'>
+<div class='newUILabel'>
+Order Quantity:
+</div><div id='orderQuantityValue' class='newUILabelValue floatleft ml10'>
+7,200 kits
+( 120 batches of 60 )
+</div>
+<input type='button' id='orderQuantityFormEdit' onclick='showOrderQuantityForm()' class='floatleft ml10 buttonStyle blue change' value='Change'/>
+<form class='floatleft ml10' id='orderQuantityForm' >
+<input id=orderQuantity type='number' max='999999' min="1" step="1" oninput="validity.valid||(value='');" value='7200' style='width:100px;'/> 
+kits
+<input type='button' class="buttonStyle ml10 green"  onclick='updateMaterialValue("MaterialForm","7200","ORDERQUANT","orderQuantity","reorderPointForm","Change order quantity to ","kits","0","text")' value='Confirm'/>
+<input type='button' class="buttonStyle  red"  onclick='hideOrderQuantityForm("7200")' value='Cancel'/>
+</form>
+<div style='clear:both;'></div>
+</div>
+<div class='clearboth'> </div>
+<div class='newUIPlot' style='display:none;'>
+<div class='newUILabel'>Inventory on day&nbsp;51.0:</div>
+<div  class='newUILabelValue floatleft ml5'>720 kits </div>
+<div  class='newUILabelValue floatleft ml10'>
+<INPUT type="button" class='plotButton buttonStyle blue' value="plot inventory" name="plot inventory" onClick="window.open('Plot?data=INV&x=all', 'INV', 'height=600,width=550,scrollbars')">
+</div>
+</div>
+<div class='clearboth'> </div>
+<div class='clearboth'> </div>
+<p class='oldUI'>
+<B>Reorder Point:</B> 1,500 kits
+( 25 batches of 60 )
+<BR><B>Order Quantity:</B>
+7,200 kits
+( 120 batches of 60 )
+<P><B>Material order of 7,200  kits due to arrive in 1.70 simulated days
+</p><div class='panelButtonPart'>
+<BR><HR><I>Please click on a button...</I><BR><BR>
+<CENTER>
+<FORM>
+<input type='hidden' id='editMode' value='true'/>
+<INPUT class='editDataButton' type="button" value="edit data" name="edit data" 
+onClick="window.open('MaterialForm','materialForm', 'height=600,width=550,scrollbars')">
+<BR>
+<P><INPUT type="button" class='plotButton' value="plot inventory" name="plot inventory" 
+onClick="window.open('Plot?data=INV&x=all', 'INV', 'height=600,width=550,scrollbars')">
+</FORM>
+<FORM action='MaterialMenu' method=GET>
+<INPUT type='submit' name='update' value='update'>
+</FORM>
+<FORM>
+<INPUT type='button' value='close' name='close'
+onClick="window.close()">
+<INPUT type='hidden' id='currentRunningDay' name='currentRunningDay' value='51.25' name='close'
+</FORM>
+</div>
+</BODY> </HTML>

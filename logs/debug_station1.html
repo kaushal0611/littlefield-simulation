@@ -1,0 +1,58 @@
+<HTML> <head><TITLE> Station Menu</TITLE>
+<style> input[type=button], input[type=submit]{ text-transform: capitalize;} .tools{ top:20px!important;} p{line-height:25px!important;} .newUI{ display:none;} </style>
+</head> <BODY>
+<h2 class='pageTitle' style='margin-top:15px;'>Littlefield Technologies - STATION 1 MENU</h2>
+<P style='margin-top:0;margin-bottom:0px;'><B> Name: </B>sasmoothoperator
+<P style='margin-top:0;margin-bottom:0px;'>
+<div class='oldUI'> <B> Number of Installed Machines:</B> 3</div>
+<div class='newUI'>
+<div class='newUILabel'>Number of Installed Machines:
+</div>
+<div id='numberOfMachineValue1' class='newUILabelValue floatleft ml10'>3
+</div>
+<input type='button' id='numberOfMachineFormEdit1' onclick='showNumberOfMachineForm(1);' class='floatleft ml10 buttonStyle blue change' value='Change'/>
+<form class='floatleft ml10' style='display:none;' id='numberOfMachineForm1'>
+<input type='number' max='9999' min="1" step="1" oninput="validity.valid||(value='');" id='stationValue1' value='3' style='width:100px;'/> 
+<input type='button' class="buttonStyle ml10 green"  onclick='updateStationValue("StationForm?id=1","3","S1COUNT","stationValue1","numberOfMachineForm","Buy "," more machine(s)",3,"text")' value='Confirm'/>
+<input type='button' class="buttonStyle  red"  onclick='hideNumberOfMachineForm(1,"3")' value='Cancel'/>
+</form>
+<div class='clearboth'> </div>
+</div>
+<div class='clearboth'> </div>
+<div class='clearboth'> </div>
+<p style='padding:0;margin:0px;'>
+<B>Purchase Price: </B>$ 90,000.00<BR>
+<B>Retirement Price: </B>$ 9,000.00<BR>
+<B>Purchase lead time: </B>3 day(s)
+ There are no additional machines on order<div class='clearboth'> </div>
+<div class='newUIPlot' style='display:none;'>
+<div class='newUILabel'>Yesterday's average utilization:</div>
+<div class='newUILabelValue'>&nbsp;1.00%  </div>
+<div class='newUILabelValue floatleft ml10'>
+<INPUT class='plotButton buttonStyle blue' type="button" value="plot utilization" name="plot job arrivals" 
+onClick="window.open('Plot?data=S1UTIL&x=all','S1UTIL', 'height=600,width=550,scrollbars')">
+</div>
+<div class='clearboth'> </div>
+</div>
+<div class='clearboth'> </div>
+<div class='panelButtonPart'><HR>
+<I>Please click on a button...</I><BR>
+</P>
+<CENTER>
+<FORM>
+<input type='hidden' id='editMode' value='true'/>
+<INPUT type="button" value="edit data" name="edit data" 
+onClick="window.open('StationForm?id=1','stationForm','height=600,width=550,scrollbars')">
+<INPUT class='plotButton' type="button" value="plot utilization" name="plot job arrivals" 
+onClick="window.open('Plot?data=S1UTIL&x=all','S1UTIL', 'height=600,width=550,scrollbars')">
+</FORM>
+<FORM action='StationMenu' method=GET>
+<INPUT type='submit' name='update' value='update'>
+<INPUT type='hidden' name='id' value='1'>
+</FORM>
+<FORM>
+<INPUT type='hidden' id='currentRunningDay' name='currentRunningDay' value='51.25'
+<INPUT type='button' value='close' name='close'
+onClick="window.close()">
+</FORM> </div>
+</BODY> </HTML>

@@ -1,0 +1,42 @@
+<HTML> <TITLE>Orders Form</TITLE>
+<BODY>
+<font size=+1 color='Navy'>
+Littlefield Technologies -
+<center>ORDERS FORM</center></font><HR>
+<I>Please select a value for the following control variable...</I>
+<form name='ordersForm' action='OrdersForm' method=POST>
+<P><B>Maximum WIP Limit: </B>
+<input type=text name=maxwip size=4 maxlength=4 value=300>jobs
+<P><B>Lot size:</B>
+<input type='radio' name='lotCount' value='1' checked>1x60
+<input type='radio' name='lotCount' value='2'>2x30
+<input type='radio' name='lotCount' value='3'>3x20
+<input type='radio' name='lotCount' value='5'>5x12
+<input type='radio' name='lotCount' value='10'>10x6
+<P><B>Contract: <B>
+<dd><table>
+<tr><td><input type='radio' name='contractOpt'value='1' checked>
+<TD><U>Contract 1</U><BR>
+Quoted lead time: 3.0 day(s)<BR>
+Maximum lead time: 6.0 day(s)<BR>
+Revenue per order: 750.0 dollars
+</table>
+<dd><table>
+<tr><td><input type='radio' name='contractOpt'value='2'>
+<TD><U>Contract 2</U><BR>
+Quoted lead time: 1.0 day(s)<BR>
+Maximum lead time: 3.0 day(s)<BR>
+Revenue per order: 1000.0 dollars
+</table>
+<dd><table>
+<tr><td><input type='radio' name='contractOpt'value='3'>
+<TD><U>Contract 3</U><BR>
+Quoted lead time: 0.25 day(s)<BR>
+Maximum lead time: 0.5 day(s)<BR>
+Revenue per order: 1500.0 dollars
+</table>
+<P><input type='submit' value='ok'>
+<input type='hidden' value='ok' name='submit'>
+<input type='button' value='cancel' onClick="window.close()">
+<input type='hidden' value='cancel' name='cancel' >
+</form></body></html>

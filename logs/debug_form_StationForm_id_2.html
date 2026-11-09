@@ -1,0 +1,24 @@
+<HTML> <TITLE>Orders Form</TITLE>
+<BODY BGCOLOR='#ffffff'>
+<font size=+1 color='Navy'>Littlefield Technologies -<center>STATION 2 FORM</center></font><HR>
+<I>Please select a value for the following control variable...</I>
+<form name='stationForm' action='StationForm' method=POST>
+<P><B>Station Count:</B>
+<input type=text size=3 maxlength=3 name='count' value='1'>
+<P><B>Scheduling Rule:<B>
+<DD><input type='radio' name='rule' value='fifo' 
+checked > 
+FIFO
+<DD><input type='radio' name='rule' value='pri2' 
+> 
+Priority to Step 2
+<DD><input type='radio' name='rule' value='pri4' 
+> 
+Priority to Step 4
+<BR>
+<input type='hidden' name='id' value='2'>
+<P><input type='submit' value='ok' >
+<input type='hidden' value='ok' name='submit'>
+<input type='button' value='cancel' onClick="window.close()">
+<input type='hidden' value='cancel' name='cancel' >
+</form></body></html>

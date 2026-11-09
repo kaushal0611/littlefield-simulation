@@ -1,0 +1,41 @@
+<HTML> <TITLE>Loan Form</TITLE>
+<style> .newUI{display:none;} </style>
+<BODY>
+<div class='oldUI'>
+<font size=+1 color='Navy'>
+Littlefield Technologies -
+</font>
+<center>LOAN FORM</center></font>
+</div>
+<div class='newUI'>
+<h2 class='loanFormPageTitle'>
+Littlefield Technologies - LOAN FORM
+</h2>
+</div>
+<HR>
+<div class='oldUI'>
+<I>Enter the dollar amount to increase or decrease debt...</I>
+</div>
+<div class='newUI'>
+Enter the dollar amount to increase or decrease debt...
+</div>
+<p>Current debt is 0
+<form id='loanFormId' name='loanForm' action='LoanForm' method=POST>
+<p><b>Dollar amount:</b>
+<input id=amount type=text size=6 maxlength=6 name='amount' value='0' />
+<p class='oldUI'><i>Integers only! Do not include symbols or punctuation in amount.</i>
+</p>
+<p class='newUI'>Integers only! Do not include symbols or punctuation in amount.
+</p>
+<div class='oldUI'>
+<input type='submit' name='submit' value='increase'/>&nbsp; &nbsp;
+<input type='submit' name='submit' value='decrease'/>
+&nbsp Debt
+</div>
+<input type=hidden name=increasestring value='increase'>
+<input type=hidden name=decreasestring value='decrease'>
+<p class='oldUI'><input type='button' value='cancel' onClick="window.close()">
+<input type='hidden' name='cancel' value='cancel' >
+</p>
+</form>
+</body></html>
