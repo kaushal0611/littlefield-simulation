@@ -138,6 +138,13 @@ def main(client=None, now=None) -> int:
                 f"rop/roq {snap.rop}/{snap.roq} contract {snap.contract} wip {snap.wip_limit} "
                 f"rule {snap.rule} edits={'on' if obs.can_edit_orders else 'OFF'}")
         lines.append(head)
+        if not obs.can_edit_orders or not snap.loan_url:
+            # keep the live pages so a parser mismatch can be fixed without logging in
+            LOG.parent.mkdir(exist_ok=True)
+            for k, h in (snap.raw or {}).items():
+                (LOG.parent / f"debug_{k}.html").write_text(h)
+            lines.append(f"  debug: order controls {sorted(k for k in snap.controls if k in ('contract','wip','lots'))}, "
+                         f"loan form {'found' if snap.loan_url else 'missing'}; pages saved to logs/debug_*.html")
         if snap.day >= cfg.get("stop_after_day", 299.5):
             lines.append("  game over or about to end: no actions")
         else:
