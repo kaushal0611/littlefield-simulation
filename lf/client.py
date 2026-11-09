@@ -255,8 +255,9 @@ class LittlefieldClient:
 
     # ---------- read ----------
     def snapshot(self, with_plots=True) -> Snapshot:
-        day, cash, team = parse_status(self.get("LTStatus"))
         raw = {}
+        raw["status"] = self.get("LTStatus")
+        day, cash, team = parse_status(raw["status"])
         cash_html = raw["cash"] = self.get(f"CashStatus?team={self.team}")
         cs = parse_cash(cash_html)
         orders_html = raw["orders"] = self.get("OrdersMenu")
