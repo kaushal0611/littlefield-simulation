@@ -70,30 +70,7 @@ def guard(acts, obs, cfg, state=None):
     """Hard limits that hold whatever the policy says."""
     ok, spend = [], 0
     cap = cfg.get("max_spend_per_run", 600_000)
-    floor = {int(k): int(v) for k, v in (cfg.get("min_machines") or {1: 3, 2: 1, 3: 1}).items()}
-    last_sell = (state or {}).get("last_sell_day", {})
     for a in acts:
-        # --- safety rails: no drastic moves, whatever the policy computes
-        if a.kind == "sell":
-            if obs.day < cfg.get("no_sell_before_day", 200):
-                continue                                    # never sell during ramp-up / peak
-            if a.value < floor.get(a.station, 1):
-                a.value = floor.get(a.station, 1)           # never below the starting fleet
-            if a.value >= obs.machines[a.station]:
-                continue
-            gap = cfg.get("min_days_between_sells", 1.0)
-            if obs.day - float(last_sell.get(str(a.station), -99)) < gap:
-                continue                                    # at most one sale per station per sim day
-        if a.kind == "contract" and int(a.value) not in cfg.get("allowed_contracts", [1, 2]):
-            continue
-        if a.kind == "lots" and int(a.value) != 1:
-            continue
-        if a.kind == "wip" and int(a.value) < cfg.get("min_wip", 8):
-            a.value = cfg.get("min_wip", 8)
-        if a.kind == "loan" and obs.debt + a.value > cfg.get("policy", {}).get("max_debt", 600_000):
-            a.value = int(cfg.get("policy", {}).get("max_debt", 600_000) - obs.debt)
-            if a.value <= 0:
-                continue
         if a.kind == "buy":
             n = a.value - obs.machines[a.station]
             if n <= 0 or obs.on_order.get(a.station, 0) > 0:
@@ -209,8 +186,6 @@ def main(client=None, now=None) -> int:
                     res = execute(client, snap, a)
                     lines.append(f"  OK   {a} | {res}")
                     st["actions"].append({"ts": ts, "day": snap.day, "act": str(a)})
-                    if a.kind == "sell":
-                        st.setdefault("last_sell_day", {})[str(a.station)] = snap.day
                 except GameError as e:
                     lines.append(f"  FAIL {a} | {e}")
                     rc = 2
