@@ -1,5 +1,5 @@
 {
- "runs": 46,
+ "runs": 47,
  "actions": [
   {
    "ts": "2026-11-09T16:40:56+00:00",
@@ -102,8 +102,8 @@
    "act": "buy S1 -> 8  (want 9 (\u03bbplan 40.6/d, backlog 44h))"
   }
  ],
- "last_day": 64.0,
- "last": "2026-11-09T23:04:52+00:00 day 64.0 cash $127,829 debt $600,000 machines {1: 7, 2: 6, 3: 4} on-order {1: 1, 2: 0, 3: 0} inv 3720 rop/roq 9840/8820 contract 2 wip 26 rule pri4 edits=on",
+ "last_day": 65.0,
+ "last": "2026-11-09T23:14:53+00:00 day 65.0 cash $138,231 debt $600,000 machines {1: 7, 2: 6, 3: 4} on-order {1: 1, 2: 0, 3: 0} inv 10620 rop/roq 9840/8820 contract 2 wip 26 rule pri4 edits=on",
  "alerts": {
   "editsoff": 1794242061.5752845
  },
