@@ -66,11 +66,34 @@ def to_obs(snap) -> Observation:
         can_edit_orders=can_edit, debt=snap.debt)
 
 
-def guard(acts, obs, cfg):
+def guard(acts, obs, cfg, state=None):
     """Hard limits that hold whatever the policy says."""
     ok, spend = [], 0
     cap = cfg.get("max_spend_per_run", 600_000)
+    floor = {int(k): int(v) for k, v in (cfg.get("min_machines") or {1: 3, 2: 1, 3: 1}).items()}
+    last_sell = (state or {}).get("last_sell_day", {})
     for a in acts:
+        # --- safety rails: no drastic moves, whatever the policy computes
+        if a.kind == "sell":
+            if obs.day < cfg.get("no_sell_before_day", 200):
+                continue                                    # never sell during ramp-up / peak
+            if a.value < floor.get(a.station, 1):
+                a.value = floor.get(a.station, 1)           # never below the starting fleet
+            if a.value >= obs.machines[a.station]:
+                continue
+            gap = cfg.get("min_days_between_sells", 1.0)
+            if obs.day - float(last_sell.get(str(a.station), -99)) < gap:
+                continue                                    # at most one sale per station per sim day
+        if a.kind == "contract" and int(a.value) not in cfg.get("allowed_contracts", [1, 2]):
+            continue
+        if a.kind == "lots" and int(a.value) != 1:
+            continue
+        if a.kind == "wip" and int(a.value) < cfg.get("min_wip", 8):
+            a.value = cfg.get("min_wip", 8)
+        if a.kind == "loan" and obs.debt + a.value > cfg.get("policy", {}).get("max_debt", 600_000):
+            a.value = int(cfg.get("policy", {}).get("max_debt", 600_000) - obs.debt)
+            if a.value <= 0:
+                continue
         if a.kind == "buy":
             n = a.value - obs.machines[a.station]
             if n <= 0 or obs.on_order.get(a.station, 0) > 0:
@@ -115,6 +138,35 @@ def summary(lines):
             f.write("\n".join(lines) + "\n")
 
 
+def alert(lines, st, cfg):
+    """Post to Slack right away for problems and big moves. Problems repeat at most once an hour."""
+    url = os.environ.get("SLACK_WEBHOOK_URL", "").strip()
+    if not url:
+        return
+    import requests
+    head = lines[0] if lines else ""
+    day = st.get("last_day") or 0
+    problems = []
+    err = next((l for l in lines if l.startswith("20") and " ERROR " in l), None)
+    if err:
+        problems.append(("error", ":rotating_light: bot run ERROR: " + err[:300]))
+    fails = [l.strip() for l in lines if l.strip().startswith("FAIL")]
+    if fails:
+        problems.append(("fail", ":warning: action failed:\n" + "\n".join(fails[:5])))
+    if "edits=OFF" in head and day >= cfg.get("alert_edits_off_after_day", 50.5):
+        problems.append(("editsoff", f":warning: day {day:.1f}: bot can't edit contract/WIP (edits=OFF). Kit orders are "
+                         f"cut from day {cfg.get('policy', {}).get('hold_after_day', 55)} if this persists."))
+    sent = st.setdefault("alerts", {})
+    now = time.time()
+    for kind, text in problems:
+        if now - sent.get(kind, 0) >= 3600:
+            requests.post(url, json={"text": text}, timeout=10)
+            sent[kind] = now
+    big = [l.strip()[5:] for l in lines if l.strip().startswith("OK") and l.strip()[5:].startswith(("sell", "loan", "repay", "contract"))]
+    if big:
+        requests.post(url, json={"text": f":information_source: day {day:.1f}: " + "; ".join(big)}, timeout=10)
+
+
 def main(client=None, now=None) -> int:
     if os.environ.get("PAUSE", "").strip() in ("1", "true", "yes"):
         print("PAUSE set, skipping run")
@@ -148,7 +200,7 @@ def main(client=None, now=None) -> int:
         if snap.day >= cfg.get("stop_after_day", 299.5):
             lines.append("  game over or about to end: no actions")
         else:
-            acts = guard(decide(obs, cfg.get("policy", {}) | {"allow_loans": cfg.get("allow_loans", False)}), obs, cfg)
+            acts = guard(decide(obs, cfg.get("policy", {}) | {"allow_loans": cfg.get("allow_loans", False)}), obs, cfg, st)
             for a in acts:
                 if dry:
                     lines.append(f"  DRY  {a}")
@@ -157,6 +209,8 @@ def main(client=None, now=None) -> int:
                     res = execute(client, snap, a)
                     lines.append(f"  OK   {a} | {res}")
                     st["actions"].append({"ts": ts, "day": snap.day, "act": str(a)})
+                    if a.kind == "sell":
+                        st.setdefault("last_sell_day", {})[str(a.station)] = snap.day
                 except GameError as e:
                     lines.append(f"  FAIL {a} | {e}")
                     rc = 2
@@ -171,6 +225,10 @@ def main(client=None, now=None) -> int:
     finally:
         client.quit()
     print("\n".join(lines))
+    try:
+        alert(lines, st, cfg)
+    except Exception as e:  # noqa: BLE001  (alerts must never break a run)
+        print("slack alert failed:", e)
     LOG.parent.mkdir(exist_ok=True)
     with open(LOG, "a") as f:
         f.write("\n".join(lines) + "\n")
