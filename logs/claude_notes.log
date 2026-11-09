@@ -1,0 +1,4 @@
+2026-11-09T16:40:00+00:00 | Taught the bot the game's real edit screens (HTML forms + password confirm). First live run: WIP cap 8, bought 1 stuffer/3 testers/2 tuners, $600k loan, tester priority pri4, kit reorder 2,340/3,120.
+2026-11-09T16:50:00+00:00 | Fixed two read bugs: machines still being installed were invisible (risk of buying twice), and cash was read net of debt. Paused live mode ~5 min while fixing; now cash on hand $754,602 and 1/3/2 machines arriving read correctly.
+2026-11-09T16:55:00+00:00 | Live run: raised kit reorder point to 5,640 and order size to 5,040.
+2026-11-09T17:05:00+00:00 | GitHub's 10-min schedule has not fired yet; starting runs by hand meanwhile. Setting up cron-job.org as a reliable 10-min timer (token form prepared for Kaushal). Slack summary switched to hourly, with this section listing what Claude does.
