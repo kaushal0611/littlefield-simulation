@@ -154,6 +154,45 @@ def parse_plot(h: str) -> dict:
     return out
 
 
+INPUT_RE = re.compile(r"<input\b([^>]*)>", re.I)
+ATTR_RE = re.compile(r"""(\w+)\s*=\s*(?:'([^']*)'|"([^"]*)"|([^\s>]+))""")
+FORMTAG_RE = re.compile(r"<form\b([^>]*)>(.*?)</form>", re.I | re.S)
+
+
+def _attrs(tag: str) -> dict:
+    out = {m.group(1).lower(): (m.group(2) if m.group(2) is not None else m.group(3) if m.group(3) is not None
+                                else m.group(4)) for m in ATTR_RE.finditer(tag)}
+    if re.search(r"\bchecked\b", tag, re.I):
+        out["checked"] = "1"
+    return out
+
+
+def parse_forms(h: str) -> list[dict]:
+    """-> [{action, fields (what a browser submits, minus submit buttons), submits: [(name, value)], password: name|None}]"""
+    forms = []
+    for m in FORMTAG_RE.finditer(html.unescape(h)):
+        fa = _attrs(m.group(1))
+        fields, submits, pw = {}, [], None
+        for im in INPUT_RE.finditer(m.group(2)):
+            a = _attrs(im.group(1))
+            typ, name, val = a.get("type", "text").lower(), a.get("name"), a.get("value", "")
+            if not name:
+                continue
+            if typ == "submit":
+                submits.append((name, val))
+            elif typ == "password":
+                pw = name
+                fields[name] = ""
+            elif typ in ("radio", "checkbox"):
+                if "checked" in a:
+                    fields[name] = val
+            elif typ in ("hidden", "text"):
+                fields[name] = val
+        forms.append(dict(action=fa.get("action", ""), method=fa.get("method", "GET").upper(),
+                          fields=fields, submits=submits, password=pw))
+    return forms
+
+
 FORM_LINK_RE = re.compile(r"window\.open\(\s*['\"]([A-Za-z]+Form(?:\?[^'\"]*)?)['\"]")
 
 
@@ -186,6 +225,7 @@ class LittlefieldClient:
         self.pause = pause
         self.s = requests.Session()
         self.s.headers["User-Agent"] = "littlefield-ops-bot/1.0"
+        self.forms = {}
 
     # ---------- session ----------
     def login(self):
@@ -237,8 +277,28 @@ class LittlefieldClient:
                     except requests.RequestException:
                         continue
                     raw["form_" + re.sub(r"\W+", "_", url)] = forms[url]
+        self.forms = {}
+        for url, fh in forms.items():
+            for f in parse_forms(fh):
+                if f["method"] == "POST" and f["action"]:
+                    self.forms[url] = f
         for url, fh in forms.items():
             cl = parse_controls(fh)
+            f = self.forms.get(url)
+            if f:
+                fl = f["fields"]
+                if url.startswith("OrdersForm"):
+                    for key, fld in (("contract", "contractOpt"), ("wip", "maxwip"), ("lots", "lotCount")):
+                        if fld in fl:
+                            cl.append(Control(fn="form", url=url, current=fl[fld], trans=fld))
+                elif url.startswith("MaterialForm"):
+                    for fld in ("point", "quant"):
+                        if fld in fl:
+                            cl.append(Control(fn="form", url=url, current=fl[fld], trans=fld))
+                elif url.startswith("StationForm"):
+                    for fld in ("count", "rule"):
+                        if fld in fl:
+                            cl.append(Control(fn="form", url=url, current=fl[fld], trans=fld))
             if url.startswith("OrdersForm"):
                 o["controls"] += cl
             elif url.startswith("MaterialForm"):
@@ -251,20 +311,32 @@ class LittlefieldClient:
                 lu = parse_cash(fh)["loan_url"]
                 if lu:
                     cs["loan_url"] = lu
+                elif url.startswith("LoanForm") and url in self.forms:
+                    cs["loan_url"] = "form:" + url
         controls = {}
         for c in o["controls"]:
             key = {"updateContractValue": "contract", "updateLotSizeValue": "lots",
                    "updateMaximumWipLimitValue": "wip"}.get(c.fn)
+            if c.fn == "form":
+                key = {"contractOpt": "contract", "maxwip": "wip", "lotCount": "lots"}[c.trans]
+                controls[key] = c
+                continue
             if key is None:  # unknown function name: fall back to the transaction code / name
                 tag = (c.trans + " " + c.fn).upper()
                 key = ("contract" if "CONTRACT" in tag else "lots" if "LOT" in tag
                        else "wip" if ("WIP" in tag or "MAXJOB" in tag) else c.fn)
             controls.setdefault(key, c)
         for c in m["controls"]:
-            controls["rop" if "POINT" in c.trans.upper() else "roq"] = c
+            key = "rop" if "POINT" in c.trans.upper() else "roq"
+            if c.fn == "form" or key not in controls:
+                controls[key] = c
         for k, v in st.items():
             for c in v["controls"]:
-                controls[f"rule" if "RULE" in c.trans.upper() else f"count{k}"] = c
+                key = "rule" if "RULE" in c.trans.upper() else f"count{k}"
+                if key == "rule" and k != 2:
+                    continue
+                if c.fn == "form" or key not in controls:
+                    controls[key] = c
         rule = st[2]["rule"] or (controls["rule"].current if "rule" in controls else "fifo")
         snap = Snapshot(
             day=day, cash=cash, debt=cs["debt"], team=team,
@@ -282,8 +354,47 @@ class LittlefieldClient:
         return snap
 
     # ---------- write ----------
+    def _post_form(self, url: str, fields: dict, submit: tuple | None = None) -> str:
+        """POST a form like a browser, then answer a password confirmation page if one comes back."""
+        data = dict(fields)
+        if submit:
+            data[submit[0]] = submit[1]
+        time.sleep(self.pause)
+        path = url.split("?")[0] if "?" in url and "id=" in url and "id" in data else url
+        r = self.s.post(f"{self.base}/Littlefield/{path}", data=data, timeout=self.timeout)
+        r.raise_for_status()
+        txt = r.text
+        for _ in range(2):
+            conf = next((f for f in parse_forms(txt) if f["password"]), None)
+            if not conf:
+                break
+            d = dict(conf["fields"])
+            d[conf["password"]] = self.password
+            sub = next(((n, v) for n, v in conf["submits"] if v.lower() in ("confirm", "ok", "submit")),
+                       conf["submits"][0] if conf["submits"] else None)
+            if sub:
+                d[sub[0]] = sub[1]
+            elif "submit" not in d:
+                d["submit"] = "confirm"
+            time.sleep(self.pause)
+            act = conf["action"].lstrip("/").removeprefix("Littlefield/") or path
+            r = self.s.post(f"{self.base}/Littlefield/{act}", data=d, timeout=self.timeout)
+            r.raise_for_status()
+            txt = r.text
+        t = _text(txt)
+        if re.search(r"\b(error|invalid|incorrect|wrong password)\b", t, re.I):
+            raise GameError(t[:200])
+        return t[:200] or "ok"
+
     def submit(self, control: Control, value) -> str:
         """POST a change exactly as the page's confirm dialog does."""
+        if control.fn == "form":
+            f = self.forms[control.url]
+            v = value
+            if control.trans in ("point", "quant"):        # material form counts batches of 60 kits
+                v = max(0, -(-int(value) // 60))
+            f["fields"][control.trans] = str(v)
+            return self._post_form(control.url, f["fields"])
         time.sleep(self.pause)
         body = f"trans={control.trans},{value}&pwd={requests.utils.quote(self.password, safe='')}&submit=confirm"
         r = self.s.post(f"{self.base}/Littlefield/{control.url}", data=body, timeout=self.timeout,
@@ -296,8 +407,18 @@ class LittlefieldClient:
         return txt.split("Success:")[-1].strip()[:200] if "Success:" in txt else _text(txt)[:200]
 
     def loan(self, url: str, amount: int, increase=True) -> str:
-        time.sleep(self.pause)
         kind = "increase" if increase else "decrease"
+        if url.startswith("form:"):
+            f = self.forms[url[5:]]
+            out = []
+            left = int(amount)
+            while left > 0:                                  # amount box takes at most 6 digits
+                step = min(left, 999_999)
+                fields = dict(f["fields"], amount=str(step))
+                out.append(self._post_form(url[5:], fields, ("submit", kind)))
+                left -= step
+            return " | ".join(out)[:200]
+        time.sleep(self.pause)
         r = self.s.post(f"{self.base}/Littlefield/{url.lstrip('/').removeprefix('Littlefield/')}",
                         data=f"submit={kind}&{kind}string={kind}&amount={int(amount)}", timeout=self.timeout,
                         headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"})
