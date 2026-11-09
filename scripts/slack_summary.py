@@ -18,6 +18,8 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 LOG = ROOT / "logs" / "actions.log"
+NOTES = ROOT / "logs" / "claude_notes.log"     # one line per change Claude makes: "<ISO time> | <what and why>"
+STATE = ROOT / "state" / "state.json"
 IST = ZoneInfo("Asia/Kolkata")
 HEAD = re.compile(
     r"^(?P<ts>\S+) day (?P<day>[\d.]+) cash \$(?P<cash>-?[\d,]+) debt \$(?P<debt>-?[\d,]+) "
@@ -105,7 +107,7 @@ def build(runs: list[dict], hours: float, now: datetime) -> str:
         last = runs[-1]["ts"].astimezone(IST).strftime("%a %H:%M") if runs else "never"
         out.append(f":rotating_light: *The bot did not run in this window.* Last run: {last}. "
                    "Check the Actions tab on GitHub (schedule delayed, or PAUSE variable set).")
-        return "\n".join(out)
+        return "\n".join(out + claude_notes(start, now))
     if heads:
         h = heads[-1]["head"]
         ref = before[-1]["head"] if before else heads[0]["head"]
@@ -179,21 +181,44 @@ def build(runs: list[dict], hours: float, now: datetime) -> str:
         out += [f"- {x}" for x in fails[:10]]
     if errs:
         out.append(f"*:rotating_light: Bot runs that errored ({len(errs)}):* " + errs[-1]["error"][:200])
+    out += claude_notes(start, now)
     return "\n".join(out)
+
+
+def claude_notes(start, now) -> list[str]:
+    notes = []
+    if NOTES.exists():
+        for line in NOTES.read_text().splitlines():
+            ts, _, msg = line.partition(" | ")
+            try:
+                t = datetime.fromisoformat(ts.strip())
+            except ValueError:
+                continue
+            if start <= t <= now and msg.strip():
+                notes.append(f"- {t.astimezone(IST).strftime('%H:%M')}: {msg.strip()}")
+    return ["", "*What Claude (the setup assistant) did*"] + (notes or ["- nothing in this window"])
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--hours", type=float)
     ap.add_argument("--print", action="store_true")
+    ap.add_argument("--if-stale", type=float, default=None,
+                    help="only post if the bot has not posted a summary in this many minutes (backup mode)")
     a = ap.parse_args()
+    if a.if_stale is not None and STATE.exists():
+        import json
+        last = json.loads(STATE.read_text()).get("last_summary", 0)
+        if datetime.now(timezone.utc).timestamp() - last < a.if_stale * 60:
+            print("bot posted a summary recently; backup not needed")
+            return
     hours = a.hours
     if hours is None:
         try:
             import yaml
-            hours = float((yaml.safe_load((ROOT / "config.yaml").read_text()) or {}).get("summary_hours", 3))
+            hours = float((yaml.safe_load((ROOT / "config.yaml").read_text()) or {}).get("summary_hours", 1))
         except Exception:  # noqa: BLE001
-            hours = 3.0
+            hours = 1.0
     runs = list(parse(LOG.read_text())) if LOG.exists() else []
     msg = build(runs, hours, datetime.now(timezone.utc))
     url = os.environ.get("SLACK_WEBHOOK_URL", "").strip()
