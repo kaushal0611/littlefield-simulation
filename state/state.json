@@ -1,5 +1,5 @@
 {
- "runs": 32,
+ "runs": 33,
  "actions": [
   {
    "ts": "2026-11-09T16:40:56+00:00",
@@ -90,10 +90,15 @@
    "ts": "2026-11-09T19:44:53+00:00",
    "day": 57.0,
    "act": "wip -> 26  (\u03bc 32.6 jobs/d x 0.8d)"
+  },
+  {
+   "ts": "2026-11-09T20:54:52+00:00",
+   "day": 60.0,
+   "act": "contract -> 2  (backlog flushed, pred lead 0.78d)"
   }
  ],
- "last_day": 59.0,
- "last": "2026-11-09T20:44:52+00:00 day 59.0 cash $167,076 debt $600,000 machines {1: 7, 2: 6, 3: 4} on-order {1: 0, 2: 0, 3: 0} inv 12780 rop/roq 9840/8820 contract 1 wip 26 rule pri4 edits=on",
+ "last_day": 60.0,
+ "last": "2026-11-09T20:54:52+00:00 day 60.0 cash $165,554 debt $600,000 machines {1: 7, 2: 6, 3: 4} on-order {1: 0, 2: 0, 3: 0} inv 12060 rop/roq 9840/8820 contract 1 wip 26 rule pri4 edits=on",
  "alerts": {
   "editsoff": 1794242061.5752845
  },
