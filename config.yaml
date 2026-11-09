@@ -10,7 +10,7 @@ max_buy_per_station_per_run: 8
 max_sell_per_run: 3
 
 # Slack (needs repo secret SLACK_WEBHOOK_URL)
-summary_hours: 3                   # window for the periodic summary (schedule is in .github/workflows/slack.yml)
+summary_hours: 1                   # bot posts a Slack summary once per this many hours (backup: .github/workflows/slack.yml)
 alert_edits_off_after_day: 50.5
 
 # policy knobs (defaults in lf/policy.py, tuned on the digital twin)

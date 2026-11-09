@@ -164,6 +164,21 @@ def alert(lines, st, cfg):
         requests.post(url, json={"text": f":information_source: day {day:.1f}: " + "; ".join(big)}, timeout=10)
 
 
+def hourly_summary(st, cfg):
+    """Post the plain-English summary to Slack once per summary_hours, from inside a bot run."""
+    url = os.environ.get("SLACK_WEBHOOK_URL", "").strip()
+    hours = float(cfg.get("summary_hours", 1))
+    if not url or time.time() - st.get("last_summary", 0) < hours * 3600 - 300:
+        return
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import requests
+    import slack_summary as ss
+    runs = list(ss.parse(LOG.read_text())) if LOG.exists() else []
+    msg = ss.build(runs, hours, datetime.now(timezone.utc))
+    requests.post(url, json={"text": msg}, timeout=15).raise_for_status()
+    st["last_summary"] = time.time()
+
+
 def main(client=None, now=None) -> int:
     if os.environ.get("PAUSE", "").strip() in ("1", "true", "yes"):
         print("PAUSE set, skipping run")
@@ -232,6 +247,10 @@ def main(client=None, now=None) -> int:
     with open(LOG, "a") as f:
         f.write("\n".join(lines) + "\n")
     summary(lines)
+    try:
+        hourly_summary(st, cfg)
+    except Exception as e:  # noqa: BLE001
+        print("slack summary failed:", e)
     save_state(st)
     return rc
 
