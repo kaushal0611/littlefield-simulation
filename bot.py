@@ -66,6 +66,24 @@ def to_obs(snap) -> Observation:
         can_edit_orders=can_edit, debt=snap.debt)
 
 
+def stats(snap) -> str:
+    """Latest daily values from the game's plots, as key=value tokens for the Slack summary."""
+    def last(prefix, agg=None):
+        keys = [k for k in snap.series if k == prefix or k.startswith(prefix + "_")]
+        pts = [(x, y) for k in keys for x, y in snap.series[k].items()]
+        if not pts:
+            return None
+        xm = max(x for x, _ in pts)
+        ys = [y for x, y in pts if x == xm]
+        return sum(ys) if agg == "sum" else ys[-1]
+    vals = dict(jobs_in=last("JOBIN"), jobs_out=last("JOBOUT", "sum"), lead=last("JOBT"), rev=last("JOBREV"),
+                jobq=last("JOBQ"), q1=last("S1Q"), q2=last("S2Q"), q3=last("S3Q"),
+                u1=last("S1UTIL"), u2=last("S2UTIL"), u3=last("S3UTIL"))
+    out = [f"lots={snap.lots_per_job}"]
+    out += [f"{k}={v:.2f}" for k, v in vals.items() if v is not None]
+    return " ".join(out)
+
+
 def guard(acts, obs, cfg, state=None):
     """Hard limits that hold whatever the policy says."""
     ok, spend = [], 0
@@ -167,6 +185,10 @@ def main(client=None, now=None) -> int:
                 f"rop/roq {snap.rop}/{snap.roq} contract {snap.contract} wip {snap.wip_limit} "
                 f"rule {snap.rule} edits={'on' if obs.can_edit_orders else 'OFF'}")
         lines.append(head)
+        try:
+            lines.append("  stats: " + stats(snap))
+        except Exception as e:  # noqa: BLE001
+            lines.append(f"  stats: unavailable ({e})")
         if not obs.can_edit_orders or not snap.loan_url:
             # keep the live pages so a parser mismatch can be fixed without logging in
             LOG.parent.mkdir(exist_ok=True)
