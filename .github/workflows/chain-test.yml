@@ -1,0 +1,14 @@
+name: chain-test
+# One-off check that a workflow can start another workflow with the built-in GITHUB_TOKEN
+# (the same mechanism littlefield-bot uses to start its next run). Safe to delete.
+on:
+  workflow_dispatch:
+permissions:
+  actions: write
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run tests.yml --repo "${{ github.repository }}" --ref main
