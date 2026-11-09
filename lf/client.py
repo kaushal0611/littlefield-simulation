@@ -132,7 +132,10 @@ def parse_station(h: str):
     t = _text(h)
     n = re.search(r"Number of Installed Machines:\s*(\d+)", t)
     on = 0
-    if re.search(r"on order", t, re.I) and not re.search(r"no additional machines on order", t, re.I):
+    pend = re.search(r"(\d+)\s+more\s+machines?\s+will\s+be\s+installed", t, re.I)
+    if pend:
+        on = int(pend.group(1))
+    elif re.search(r"on order", t, re.I) and not re.search(r"no additional machines on order", t, re.I):
         m = re.search(r"(\d+)\s+(?:additional\s+)?machines?\b[^.]{0,60}?on order", t, re.I) or \
             re.search(r"on order[^.]{0,40}?(\d+)", t, re.I)
         on = int(m.group(1)) if m else 1   # unknown wording: assume something is pending
@@ -212,7 +215,9 @@ def parse_cash(h: str):
     m = re.search(r"\(\s*[\"']([^\"']+)[\"'][^)]*[\"']MOREDEBT[\"']", h)
     if m:
         loan_url = m.group(1)
-    return dict(debt=_num(debt.group(1)) if debt else 0.0, loan_url=loan_url)
+    onhand = re.search(r"Cash on Hand\s*(-?[\d,]+(?:\.\d+)?)", t)
+    return dict(debt=_num(debt.group(1)) if debt else 0.0, loan_url=loan_url,
+                on_hand=_num(onhand.group(1)) if onhand else None)
 
 
 class LittlefieldClient:
@@ -339,6 +344,8 @@ class LittlefieldClient:
                 if c.fn == "form" or key not in controls:
                     controls[key] = c
         rule = st[2]["rule"] or (controls["rule"].current if "rule" in controls else "fifo")
+        if cs.get("on_hand") is not None:      # LTStatus "Cash Balance" is net of debt; spendable cash is on hand
+            cash = cs["on_hand"]
         snap = Snapshot(
             day=day, cash=cash, debt=cs["debt"], team=team,
             machines={k: st[k]["machines"] for k in (1, 2, 3)},
