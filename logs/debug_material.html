@@ -7,15 +7,15 @@
 <BR><B>Order Cost: </B> $ 1000.0
 <BR><B>Lead Time:</B> 4 day(s)
 <div class='newUI'>
-<div class='newUILabel'>Reorder Point:</div> <div id='reorderPointValue' class='newUILabelValue floatleft ml10'>1,500 kits
-( 25 batches of 60 )
+<div class='newUILabel'>Reorder Point:</div> <div id='reorderPointValue' class='newUILabelValue floatleft ml10'>2,340 kits
+( 39 batches of 60 )
 </div>
 <input type='button' id='reorderPointFormEdit' onclick='showReorderPointForm()' class='floatleft ml10 buttonStyle blue change' value='Change'/>
 <form class='floatleft ml10' id='reorderPointForm'>
-<input type='number' max='999999' min="1" step="1" oninput="validity.valid||(value='');" id='reorderPoint' value='1500' style='width:100px;'/> 
+<input type='number' max='999999' min="1" step="1" oninput="validity.valid||(value='');" id='reorderPoint' value='2340' style='width:100px;'/> 
 kits
-<input type='button' class="buttonStyle ml10 green"  onclick='updateMaterialValue("MaterialForm","1500","ORDERPOINT","reorderPoint","reorderPointForm","Change order point to ","kits","0","text")' value='Confirm'/>
-<input type='button' class="buttonStyle  red"  onclick='hideReorderPointForm("1500")' value='Cancel'/>
+<input type='button' class="buttonStyle ml10 green"  onclick='updateMaterialValue("MaterialForm","2340","ORDERPOINT","reorderPoint","reorderPointForm","Change order point to ","kits","0","text")' value='Confirm'/>
+<input type='button' class="buttonStyle  red"  onclick='hideReorderPointForm("2340")' value='Cancel'/>
 </form>
 <div class='clearboth'></div>
 </div>
@@ -23,15 +23,15 @@ kits
 <div class='newUILabel'>
 Order Quantity:
 </div><div id='orderQuantityValue' class='newUILabelValue floatleft ml10'>
-7,200 kits
-( 120 batches of 60 )
+3,120 kits
+( 52 batches of 60 )
 </div>
 <input type='button' id='orderQuantityFormEdit' onclick='showOrderQuantityForm()' class='floatleft ml10 buttonStyle blue change' value='Change'/>
 <form class='floatleft ml10' id='orderQuantityForm' >
-<input id=orderQuantity type='number' max='999999' min="1" step="1" oninput="validity.valid||(value='');" value='7200' style='width:100px;'/> 
+<input id=orderQuantity type='number' max='999999' min="1" step="1" oninput="validity.valid||(value='');" value='3120' style='width:100px;'/> 
 kits
-<input type='button' class="buttonStyle ml10 green"  onclick='updateMaterialValue("MaterialForm","7200","ORDERQUANT","orderQuantity","reorderPointForm","Change order quantity to ","kits","0","text")' value='Confirm'/>
-<input type='button' class="buttonStyle  red"  onclick='hideOrderQuantityForm("7200")' value='Cancel'/>
+<input type='button' class="buttonStyle ml10 green"  onclick='updateMaterialValue("MaterialForm","3120","ORDERQUANT","orderQuantity","reorderPointForm","Change order quantity to ","kits","0","text")' value='Confirm'/>
+<input type='button' class="buttonStyle  red"  onclick='hideOrderQuantityForm("3120")' value='Cancel'/>
 </form>
 <div style='clear:both;'></div>
 </div>
@@ -46,12 +46,12 @@ kits
 <div class='clearboth'> </div>
 <div class='clearboth'> </div>
 <p class='oldUI'>
-<B>Reorder Point:</B> 1,500 kits
-( 25 batches of 60 )
+<B>Reorder Point:</B> 2,340 kits
+( 39 batches of 60 )
 <BR><B>Order Quantity:</B>
-7,200 kits
-( 120 batches of 60 )
-<P><B>Material order of 7,200  kits due to arrive in 1.70 simulated days
+3,120 kits
+( 52 batches of 60 )
+<P><B>Material order of 7,200  kits due to arrive in 1.30 simulated days
 </p><div class='panelButtonPart'>
 <BR><HR><I>Please click on a button...</I><BR><BR>
 <CENTER>
@@ -69,7 +69,7 @@ onClick="window.open('Plot?data=INV&x=all', 'INV', 'height=600,width=550,scrollb
 <FORM>
 <INPUT type='button' value='close' name='close'
 onClick="window.close()">
-<INPUT type='hidden' id='currentRunningDay' name='currentRunningDay' value='51.25' name='close'
+<INPUT type='hidden' id='currentRunningDay' name='currentRunningDay' value='51.69' name='close'
 </FORM>
 </div>
 </BODY> </HTML>
