@@ -1,14 +1,20 @@
 name: littlefield-bot
 
+# Self-running: each run loops the bot every 10 min for ~5h40m, then starts the next run itself
+# (workflow_dispatch from GITHUB_TOKEN is allowed), so nothing outside GitHub is needed.
+# The hourly schedule is only a backup that restarts the chain if it ever breaks; while a run is
+# active, extra runs just queue (concurrency group) and are replaced by the chain's own next run.
+# Stop everything: Actions -> littlefield-bot -> "..." -> Disable workflow. Pause decisions only: variable PAUSE=1.
+
 on:
   schedule:
-    - cron: "4-59/10 * * * *"   # every 10 min at :04, :14, ... (off-peak minutes start more reliably); 1 sim day = ~29 min
+    - cron: "23 * * * *"
   workflow_dispatch:
     inputs:
       dry_run:
         description: "Decide and log only, change nothing"
         type: boolean
-        default: true
+        default: false
 
 concurrency:
   group: littlefield-bot
@@ -16,11 +22,21 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 355
+    env:
+      LF_ID: ${{ secrets.LF_ID }}
+      LF_PASSWORD: ${{ secrets.LF_PASSWORD }}
+      LF_INSTITUTION: iimb
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      PAUSE: ${{ vars.PAUSE }}
+      DRY_RUN: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '1' || vars.DRY_RUN }}
+      LOOP_MINUTES: "340"
+      EVERY_SECONDS: "600"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -28,21 +44,24 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
-      - name: Run bot
-        env:
-          LF_ID: ${{ secrets.LF_ID }}
-          LF_PASSWORD: ${{ secrets.LF_PASSWORD }}
-          LF_INSTITUTION: iimb
-          PAUSE: ${{ vars.PAUSE }}
-          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || vars.DRY_RUN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: python bot.py
-      - name: Save state and log
-        if: always()
+      - name: Run bot every 10 min
         run: |
           git config user.name "littlefield-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add state logs || true
-          git commit -m "bot run $(date -u +%H:%M) [skip ci]" || exit 0
-          git pull --rebase --autostash || true
-          git push || true
+          end=$(( $(date +%s) + LOOP_MINUTES * 60 ))
+          while :; do
+            start=$(date +%s)
+            git pull --rebase --autostash -q || true          # pick up config/code edits between runs
+            python bot.py || echo "bot run exited with $?"
+            git add state logs || true
+            git commit -qm "bot run $(date -u +%H:%M) [skip ci]" || true
+            for i in 1 2 3; do git pull --rebase --autostash -q && git push -q && break; sleep 5; done || true
+            now=$(date +%s)
+            [ $(( now + EVERY_SECONDS )) -ge $end ] && break
+            sleep $(( EVERY_SECONDS - (now - start) > 0 ? EVERY_SECONDS - (now - start) : 1 ))
+          done
+      - name: Start the next run
+        if: always() && !cancelled()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run bot.yml --repo "${{ github.repository }}" --ref main -f dry_run=false
