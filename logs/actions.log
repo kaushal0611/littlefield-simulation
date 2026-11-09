@@ -9,3 +9,12 @@
 2026-11-09T16:36:49+00:00 day 51.0 cash $714,602 debt $0 machines {1: 3, 2: 1, 3: 1} on-order {1: 0, 2: 0, 3: 0} inv 720 rop/roq 1500/7200 contract 1 wip 300 rule fifo edits=OFF
   debug: order controls [], loan form missing; pages saved to logs/debug_*.html
   no changes needed
+2026-11-09T16:40:56+00:00 day 51.0 cash $714,602 debt $0 machines {1: 3, 2: 1, 3: 1} on-order {1: 0, 2: 0, 3: 0} inv 720 rop/roq 1500/7200 contract 1 wip 300 rule fifo edits=on
+  OK   wip -> 8  (μ 7.8 jobs/d x 0.6d) |  Orders Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Maximum WIP limit set to 8 jobs. 
+  OK   buy S1 -> 4  (want 10 (λplan 34.4/d, backlog 163h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 1 machine was purchased for station 1 
+  OK   buy S2 -> 4  (want 8 (λplan 34.4/d, backlog 666h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 3 machines were purchased for station 2 
+  OK   buy S3 -> 3  (want 5 (λplan 34.4/d, backlog 371h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 2 machines were purchased for station 3 
+  OK   loan -> 600000  (unfunded high-payback capacity $1,060,000) |  Loan Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Debt was increased by $600,000. Total debt is now $600,000 
+  OK   rule S2 -> pri4  (config) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... New scheduling rule for station 2 set to pri4 
+  OK   rop -> 2340  (D 466 kits/d, lead 4d + 1.0d safety) |  Materials Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Material order point is now 39 x 60 = 2340 units 
+  OK   roq -> 3120  (EOQ 3084, cover 4.5d) |  Materials Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Material order quantity is now 52 x 60 = 3120 units 
