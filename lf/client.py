@@ -154,6 +154,18 @@ def parse_plot(h: str) -> dict:
     return out
 
 
+FORM_LINK_RE = re.compile(r"window\.open\(\s*['\"]([A-Za-z]+Form(?:\?[^'\"]*)?)['\"]")
+
+
+def form_links(h: str) -> list[str]:
+    """Edit pages a menu links to (e.g. OrdersForm, LoanForm, StationForm?id=2). Only URLs the game itself links."""
+    out = []
+    for u in FORM_LINK_RE.findall(html.unescape(h)):
+        if u not in out:
+            out.append(u)
+    return out
+
+
 def parse_cash(h: str):
     t = _text(h)
     debt = re.search(r"Debt\s*(-?[\d,]+(?:\.\d+)?)", t)
@@ -204,12 +216,41 @@ class LittlefieldClient:
     # ---------- read ----------
     def snapshot(self, with_plots=True) -> Snapshot:
         day, cash, team = parse_status(self.get("LTStatus"))
-        cash_html = self.get(f"CashStatus?team={self.team}")
+        raw = {}
+        cash_html = raw["cash"] = self.get(f"CashStatus?team={self.team}")
         cs = parse_cash(cash_html)
-        orders_html = self.get("OrdersMenu")
+        orders_html = raw["orders"] = self.get("OrdersMenu")
         o = parse_orders(orders_html)
-        m = parse_material(self.get("MaterialMenu"))
-        st = {k: parse_station(self.get(f"StationMenu?id={k}")) for k in (1, 2, 3)}
+        mat_html = raw["material"] = self.get("MaterialMenu")
+        m = parse_material(mat_html)
+        st = {}
+        for k in (1, 2, 3):
+            raw[f"station{k}"] = self.get(f"StationMenu?id={k}")
+            st[k] = parse_station(raw[f"station{k}"])
+        # once the game runs, edit controls live on separate pages the menus open ("edit data")
+        forms = {}
+        for menu in list(raw):
+            for url in form_links(raw[menu]):
+                if url not in forms:
+                    try:
+                        forms[url] = self.get(url)
+                    except requests.RequestException:
+                        continue
+                    raw["form_" + re.sub(r"\W+", "_", url)] = forms[url]
+        for url, fh in forms.items():
+            cl = parse_controls(fh)
+            if url.startswith("OrdersForm"):
+                o["controls"] += cl
+            elif url.startswith("MaterialForm"):
+                m["controls"] += cl
+            elif url.startswith("StationForm"):
+                sid = re.search(r"id=(\d)", url)
+                if sid and int(sid.group(1)) in st:
+                    st[int(sid.group(1))]["controls"] += cl
+            if not cs["loan_url"]:
+                lu = parse_cash(fh)["loan_url"]
+                if lu:
+                    cs["loan_url"] = lu
         controls = {}
         for c in o["controls"]:
             key = {"updateContractValue": "contract", "updateLotSizeValue": "lots",
@@ -232,7 +273,7 @@ class LittlefieldClient:
             rule=rule, contract=o["contract"], lots_per_job=o["lots_per_job"], wip_limit=o["wip_limit"],
             inventory=m["inventory"], rop=m["rop"], roq=m["roq"], kit_unit=m["kit_unit"],
             kit_order_cost=m["kit_order_cost"], kits_on_order=m["kits_on_order"],
-            controls=controls, loan_url=cs["loan_url"], raw={"orders": orders_html, "cash": cash_html})
+            controls=controls, loan_url=cs["loan_url"], raw=raw)
         if with_plots:
             for name in PLOTS:
                 for lab, pts in parse_plot(self.get(f"Plot?data={name}&x=all")).items():
