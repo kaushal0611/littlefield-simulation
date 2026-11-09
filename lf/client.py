@@ -68,6 +68,7 @@ class Snapshot:
     controls: dict = field(default_factory=dict)   # key -> Control
     loan_url: str | None = None
     series: dict = field(default_factory=dict)
+    raw: dict = field(default_factory=dict)        # page html kept for debugging
 
 
 def _num(s: str) -> float:
@@ -203,15 +204,21 @@ class LittlefieldClient:
     # ---------- read ----------
     def snapshot(self, with_plots=True) -> Snapshot:
         day, cash, team = parse_status(self.get("LTStatus"))
-        cs = parse_cash(self.get(f"CashStatus?team={self.team}"))
-        o = parse_orders(self.get("OrdersMenu"))
+        cash_html = self.get(f"CashStatus?team={self.team}")
+        cs = parse_cash(cash_html)
+        orders_html = self.get("OrdersMenu")
+        o = parse_orders(orders_html)
         m = parse_material(self.get("MaterialMenu"))
         st = {k: parse_station(self.get(f"StationMenu?id={k}")) for k in (1, 2, 3)}
         controls = {}
         for c in o["controls"]:
             key = {"updateContractValue": "contract", "updateLotSizeValue": "lots",
-                   "updateMaximumWipLimitValue": "wip"}.get(c.fn, c.fn)
-            controls[key] = c
+                   "updateMaximumWipLimitValue": "wip"}.get(c.fn)
+            if key is None:  # unknown function name: fall back to the transaction code / name
+                tag = (c.trans + " " + c.fn).upper()
+                key = ("contract" if "CONTRACT" in tag else "lots" if "LOT" in tag
+                       else "wip" if ("WIP" in tag or "MAXJOB" in tag) else c.fn)
+            controls.setdefault(key, c)
         for c in m["controls"]:
             controls["rop" if "POINT" in c.trans.upper() else "roq"] = c
         for k, v in st.items():
@@ -225,7 +232,7 @@ class LittlefieldClient:
             rule=rule, contract=o["contract"], lots_per_job=o["lots_per_job"], wip_limit=o["wip_limit"],
             inventory=m["inventory"], rop=m["rop"], roq=m["roq"], kit_unit=m["kit_unit"],
             kit_order_cost=m["kit_order_cost"], kits_on_order=m["kits_on_order"],
-            controls=controls, loan_url=cs["loan_url"])
+            controls=controls, loan_url=cs["loan_url"], raw={"orders": orders_html, "cash": cash_html})
         if with_plots:
             for name in PLOTS:
                 for lab, pts in parse_plot(self.get(f"Plot?data={name}&x=all")).items():
