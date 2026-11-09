@@ -15,9 +15,9 @@ alert_edits_off_after_day: 50.5
 
 # policy knobs (defaults in lf/policy.py, tuned on the digital twin)
 policy:
-  util_target: 0.90       # planned machine utilisation at forecast demand
-  flush_days: 6           # clear the day-50 backlog over ~6 days
-  wip_days: 0.6           # WIP cap = throughput x 0.6 day -> lead time < 1 day
+  util_target: 1.0        # planned machine utilisation at forecast demand (tuned 9 Nov: beats 0.90 in all 6 test cases)
+  flush_days: 10          # clear the day-50 backlog over ~10 days
+  wip_days: 0.8           # WIP cap = throughput x 0.8 day
   max_debt: 600000
   safety_days: 1.0        # kit safety stock
   rule: pri4              # tester priority: fifo | pri2 | pri4
