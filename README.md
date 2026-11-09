@@ -1,4 +1,4 @@
-# Littlefield bot (team 8a, IIMB PGP 2026)
+# Littlefield bot (team sasmoothoperator, IIMB PGP 2026)
 
 Runs the Littlefield factory on its own from GitHub's servers, every ~10 minutes, from now until day 300. Your laptops can stay off.
 
