@@ -2,7 +2,7 @@ name: littlefield-bot
 
 on:
   schedule:
-    - cron: "*/10 * * * *"      # every ~10 min (GitHub may delay a few min); 1 sim day = ~29 min
+    - cron: "4-59/10 * * * *"   # every 10 min at :04, :14, ... (off-peak minutes start more reliably); 1 sim day = ~29 min
   workflow_dispatch:
     inputs:
       dry_run:
