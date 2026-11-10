@@ -5,8 +5,8 @@ allow_loans: true         # borrow (20%/yr + 5% fee) to fund fast-payback capaci
 stop_after_day: 299.5
 
 # hard limits, applied after the policy
-max_spend_per_run: 600000
-max_buy_per_station_per_run: 8
+max_spend_per_run: 2000000      # raised 10 Nov for the contract-3 fleet (was 600k)
+max_buy_per_station_per_run: 12
 max_sell_per_run: 3
 
 # Slack (needs repo secret SLACK_WEBHOOK_URL)
@@ -18,7 +18,15 @@ policy:
   util_target: 1.0        # planned machine utilisation at forecast demand (tuned 9 Nov: beats 0.90 in all 6 test cases)
   flush_days: 10          # clear the day-50 backlog over ~10 days
   wip_days: 0.8           # WIP cap = throughput x 0.8 day
-  max_debt: 900000        # raised 10 Nov (was 600k): room for the cash floor below
+  max_debt: 3000000       # 10 Nov evening: contract-3 switch, ~$1.3M of machines on debt (was 900k)
+  max_spend_per_run: 2000000
+  max_machines: 30
+  strategy: c3plan        # 10 Nov evening: leaderboard shows contract-3 teams gaining $40-56k/day vs our $9.6k
+  c3_lots: 3              # 3 lots of 20 kits per job
+  c3_util: 1.0            # size the fleet for peak demand at 100% (sim best)
+  c3_wip: 12              # WIP cap while on contract 3
+  c3_wait_for_fleet: true # switch contract + lots only once the new machines have arrived
+  c3_fallback_hours: 99   # no automatic fall-back to contract 2
   cash_floor: 150000      # was 250k; >= one kit order (~$122k) so machine buys + kit orders stay allowed
   safety_days: 0.5        # kit safety stock (was 1.0; 0.5 tested +$10k, debt-financed kits cost 20%/yr)
   rule: pri4              # tester priority: fifo | pri2 | pri4
