@@ -468,3 +468,8 @@
   OK   lots -> 3  (fleet ready: split jobs for contract 3) |  Orders Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Jobs released into the factory in the future will be split into 3 lots 
   OK   wip -> 12  (c3plan, contract 3) |  Orders Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Maximum WIP limit set to 12 jobs. 
   OK   contract -> 3  (backlog gone, split lots fit the 6h quote) |  Orders Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Orders that arrive in the future will be accepted under the following contract: quoted lead time = 0.25
+2026-11-10T16:06:41+00:00 day 100.0 cash $378,259 debt $1,697,607 machines {1: 16, 2: 7, 3: 9} on-order {1: 0, 2: 0, 3: 0} inv 4140 rop/roq 13920/12120 contract 3 wip 12 rule pri4 edits=on
+  stats: lots=3 jobs_in=46.00 jobs_out=52.00 lead=0.00 rev=0.00 jobq=0.00 q1=671.16 q2=220.34 q3=60.91 u1=0.98 u2=0.92 u3=0.65
+  OK   loan -> 93543  (fund c3 fleet $190,000) |  Loan Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Debt was increased by $93,543. Total debt is now $1,791,150 
+  OK   buy S1 -> 17  (want 17 (λplan 50.2/d, backlog 89h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 1 machine was purchased for station 1 
+  OK   buy S3 -> 10  (want 10 (λplan 50.2/d, backlog 69h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 1 machine was purchased for station 3 

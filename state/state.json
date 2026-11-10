@@ -1,5 +1,5 @@
 {
- "runs": 151,
+ "runs": 152,
  "actions": [
   {
    "ts": "2026-11-09T16:40:56+00:00",
@@ -255,12 +255,27 @@
    "ts": "2026-11-10T15:56:41+00:00",
    "day": 99.0,
    "act": "contract -> 3  (backlog gone, split lots fit the 6h quote)"
+  },
+  {
+   "ts": "2026-11-10T16:06:41+00:00",
+   "day": 100.0,
+   "act": "loan -> 93543  (fund c3 fleet $190,000)"
+  },
+  {
+   "ts": "2026-11-10T16:06:41+00:00",
+   "day": 100.0,
+   "act": "buy S1 -> 17  (want 17 (\u03bbplan 50.2/d, backlog 89h))"
+  },
+  {
+   "ts": "2026-11-10T16:06:41+00:00",
+   "day": 100.0,
+   "act": "buy S3 -> 10  (want 10 (\u03bbplan 50.2/d, backlog 69h))"
   }
  ],
- "last_day": 99.0,
- "last": "2026-11-10T15:56:41+00:00 day 99.0 cash $361,534 debt $1,697,607 machines {1: 16, 2: 7, 3: 9} on-order {1: 0, 2: 0, 3: 0} inv 6900 rop/roq 13920/12120 contract 2 wip 41 rule pri4 edits=on",
+ "last_day": 100.0,
+ "last": "2026-11-10T16:06:41+00:00 day 100.0 cash $378,259 debt $1,697,607 machines {1: 16, 2: 7, 3: 9} on-order {1: 0, 2: 0, 3: 0} inv 4140 rop/roq 13920/12120 contract 3 wip 12 rule pri4 edits=on",
  "alerts": {
   "editsoff": 1794242061.5752845
  },
- "last_summary": 1794323182.5482507
+ "last_summary": 1794326817.5926692
 }
