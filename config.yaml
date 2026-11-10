@@ -18,7 +18,8 @@ policy:
   util_target: 1.0        # planned machine utilisation at forecast demand (tuned 9 Nov: beats 0.90 in all 6 test cases)
   flush_days: 10          # clear the day-50 backlog over ~10 days
   wip_days: 0.8           # WIP cap = throughput x 0.8 day
-  max_debt: 600000
+  max_debt: 900000        # raised 10 Nov (was 600k): room for the cash floor below
+  cash_floor: 250000      # borrow to keep >= $250k on hand so kit orders aren't cut for cash
   safety_days: 1.0        # kit safety stock
   rule: pri4              # tester priority: fifo | pri2 | pri4
   sell_from_day: 200
