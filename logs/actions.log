@@ -347,3 +347,6 @@
   stats: lots=1 jobs_in=50.00 jobs_out=49.00 lead=0.00 rev=0.00 jobq=0.23 q1=445.85 q2=230.25 q3=93.73 u1=1.00 u2=1.00 u3=0.72
   OK   loan -> 108434  (keep $250,000 cash for kit orders) |  Loan Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Debt was increased by $108,434. Total debt is now $708,434 
   OK   roq -> 12120  (EOQ 7488, cover 4.5d) |  Materials Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Material order quantity is now 202 x 60 = 12120 units 
+2026-11-10T09:55:47+00:00 day 87.0 cash $258,612 debt $708,434 machines {1: 10, 2: 6, 3: 4} on-order {1: 0, 2: 1, 3: 0} inv 5700 rop/roq 12060/12120 contract 2 wip 34 rule pri4 edits=on
+  stats: lots=1 jobs_in=46.00 jobs_out=52.00 lead=0.00 rev=0.00 jobq=0.00 q1=610.37 q2=187.85 q3=36.16 u1=1.00 u2=0.99 u3=0.70
+  OK   buy S1 -> 11  (want 11 (λplan 45.9/d, backlog 52h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 1 machine was purchased for station 1 
