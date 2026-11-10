@@ -431,3 +431,8 @@
 2026-11-10T14:16:13+00:00 day 96.0 cash $333,085 debt $718,291 machines {1: 11, 2: 7, 3: 4} on-order {1: 0, 2: 0, 3: 0} inv 3960 rop/roq 13920/12120 contract 2 wip 41 rule pri4 edits=on
   stats: lots=1 jobs_in=46.00 jobs_out=53.00 lead=0.00 rev=0.00 jobq=0.00 q1=473.43 q2=236.86 q3=84.51 u1=0.99 u2=0.90 u3=0.81
   no changes needed
+2026-11-10T14:26:13+00:00 day 96.0 cash $349,085 debt $718,291 machines {1: 11, 2: 7, 3: 4} on-order {1: 0, 2: 0, 3: 0} inv 3960 rop/roq 13920/12120 contract 2 wip 41 rule pri4 edits=on
+  stats: lots=1 jobs_in=46.00 jobs_out=53.00 lead=0.00 rev=0.00 jobq=0.00 q1=473.43 q2=236.86 q3=84.51 u1=0.99 u2=0.90 u3=0.81
+  OK   loan -> 867187  (fund c3 fleet $950,000) |  Loan Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Debt was increased by $867,187. Total debt is now $1,585,478 
+  OK   buy S1 -> 16  (want 16 (λplan 45.9/d, backlog 41h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 5 machines were purchased for station 1 
+  OK   buy S3 -> 9  (want 9 (λplan 45.9/d, backlog 20h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 5 machines were purchased for station 3 
