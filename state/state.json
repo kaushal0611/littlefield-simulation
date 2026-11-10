@@ -1,5 +1,5 @@
 {
- "runs": 114,
+ "runs": 115,
  "actions": [
   {
    "ts": "2026-11-09T16:40:56+00:00",
@@ -205,10 +205,15 @@
    "ts": "2026-11-10T10:05:47+00:00",
    "day": 87.0,
    "act": "loan -> 63388  (keep $250,000 cash for kit orders)"
+  },
+  {
+   "ts": "2026-11-10T10:15:47+00:00",
+   "day": 88.0,
+   "act": "rop -> 13920  (D 2772 kits/d, lead 4d + 1.0d safety)"
   }
  ],
- "last_day": 87.0,
- "last": "2026-11-10T10:05:47+00:00 day 87.0 cash $186,612 debt $708,434 machines {1: 10, 2: 7, 3: 4} on-order {1: 1, 2: 0, 3: 0} inv 5700 rop/roq 12060/12120 contract 2 wip 34 rule pri4 edits=on",
+ "last_day": 88.0,
+ "last": "2026-11-10T10:15:47+00:00 day 88.0 cash $262,106 debt $771,822 machines {1: 10, 2: 7, 3: 4} on-order {1: 1, 2: 0, 3: 0} inv 2640 rop/roq 12060/12120 contract 2 wip 34 rule pri4 edits=on",
  "alerts": {
   "editsoff": 1794242061.5752845
  },
