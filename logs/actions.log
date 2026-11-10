@@ -213,3 +213,6 @@
 2026-11-10T02:35:20+00:00 day 72.0 cash $201,910 debt $600,000 machines {1: 8, 2: 6, 3: 4} on-order {1: 0, 2: 0, 3: 0} inv 4320 rop/roq 9840/8340 contract 2 wip 30 rule pri4 edits=on
   stats: lots=1 jobs_in=36.00 jobs_out=34.00 lead=0.00 rev=0.00 jobq=0.00 q1=803.64 q2=10.27 q3=4.36 u1=1.00 u2=0.75 u3=0.59
   OK   buy S1 -> 9  (want 10 (λplan 42.5/d, backlog 69h)) |  Station Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... 1 machine was purchased for station 1 
+2026-11-10T02:45:21+00:00 day 72.0 cash $127,843 debt $600,000 machines {1: 8, 2: 6, 3: 4} on-order {1: 1, 2: 0, 3: 0} inv 4320 rop/roq 9840/8340 contract 2 wip 30 rule pri4 edits=on
+  stats: lots=1 jobs_in=36.00 jobs_out=34.00 lead=0.00 rev=0.00 jobq=0.00 q1=803.64 q2=10.27 q3=4.36 u1=1.00 u2=0.75 u3=0.59
+  OK   rop -> 12060  (D 2412 kits/d, lead 4d + 1.0d safety) |  Materials Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Material order point is now 201 x 60 = 12060 units 
