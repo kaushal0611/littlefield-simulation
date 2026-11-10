@@ -81,6 +81,9 @@ DEFAULTS = dict(
     late_wip_days=0.3,         # WIP cap = throughput x this while on late contract 3
     extra_machines=None,       # e.g. {1: 1}: keep this many machines above the plan at a station (until day 150)
     cash_floor=0,              # borrow (within max_debt) to keep at least this much cash for kit orders
+    c3_wait_for_fleet=False,   # c3plan: only switch to contract 3 once no machines are still on order
+    loan_from_day=0,           # no borrowing before this day
+    repay_from_day=0,          # no repayment before this day (999 = hold debt to the end)
 )
 
 
@@ -202,10 +205,14 @@ def decide(obs: Observation, cfg: dict | None = None) -> list[Action]:
         measured = sum(lt3) / len(lt3) if len(lt3) >= 3 else None
         c3_ok = measured is None or measured * 24 <= cfg["c3_fallback_hours"]
         flushed = lt_new <= 1.0
-        if flushed and lots != cfg["c3_lots"]:
-            acts.append(Action("lots", cfg["c3_lots"], reason="backlog gone: split jobs for contract 3"))
+        lam_l = f.max_rate(d + 3.0, GAME_END) if d + 3.0 < GAME_END else 0.0
+        need_c3 = {k: max(1, math.ceil(lam_l * h_plan[k] / (24 * cfg["util_target"]) - 1e-9) - 1) for k in (1, 2, 3)}
+        fleet_ready = not cfg["c3_wait_for_fleet"] or (not any(obs.on_order.get(k, 0) for k in (1, 2, 3))
+                                                       and all(obs.machines[k] >= need_c3[k] for k in (1, 2, 3)))
+        if flushed and lots != cfg["c3_lots"] and (fleet_ready or contract == 3):
+            acts.append(Action("lots", cfg["c3_lots"], reason="fleet ready: split jobs for contract 3"))
             lots = cfg["c3_lots"]
-        want_c = (3 if c3_ok else 2) if flushed else contract
+        want_c = (3 if c3_ok else 2) if flushed and (fleet_ready or contract == 3) else contract
         c3cap = int(max(cfg["min_wip"] // 2, round(mu_now * cfg["late_wip_days"]))) if late else cfg["c3_wip"]
         cap = (c3cap if want_c == 3 else int(max(cfg["min_wip"], round(mu_now * cfg["wip_days"])))) \
             if flushed else int(max(cfg["min_wip"], round(mu_now * cfg["wip_days"])))
@@ -279,9 +286,10 @@ def decide(obs: Observation, cfg: dict | None = None) -> list[Action]:
             want[int(k)] = min(cfg["max_machines"], want[int(k)] + int(n))
     buys = []
     shortfall = {k: want[k] - eff[k] for k in (1, 2, 3)}
-    if c3plan and not late and cfg["allow_loans"] and d < 150:
+    if c3plan and not late and cfg["allow_loans"] and cfg["loan_from_day"] <= d < 150:
         # borrow first, so the whole fleet can be bought in one go (machines take 3 days either way)
-        cost = sum(PRICES[k][0] * max(0, shortfall[k]) for k in (1, 2, 3) if pays(k))
+        cost = sum(PRICES[k][0] * max(0, shortfall[k]) for k in (1, 2, 3)
+                   if pays(k) and obs.on_order.get(k, 0) == 0)          # only what can be bought this run
         reserve = 60 * lam_plan * 6 * obs.kit_unit + obs.kit_order_cost + 5 * cfg["cash_buffer"]   # ~6 days of kits
         loan = min(cost + reserve - obs.cash, cfg["max_debt"] - obs.debt)
         if loan >= 50_000:
@@ -291,7 +299,7 @@ def decide(obs: Observation, cfg: dict | None = None) -> list[Action]:
     # least critical station last
     alloc = {k: 0 for k in (1, 2, 3)}
     while True:
-        cands = [k for k in (1, 2, 3) if shortfall[k] - alloc[k] > 0 and pays(k)]
+        cands = [k for k in (1, 2, 3) if shortfall[k] - alloc[k] > 0 and pays(k) and obs.on_order.get(k, 0) == 0]
         if not cands:
             break
         k = max(cands, key=lambda k: (lam_plan * h[k] + backlog_h[k] / cfg["flush_days"]) /
@@ -310,23 +318,24 @@ def decide(obs: Observation, cfg: dict | None = None) -> list[Action]:
                    if shortfall[k] - alloc[k] > 0 and pays(k))
     if c3plan and any(a.kind == "loan" for a in acts):
         pass
-    elif cfg["allow_loans"] and obs.can_edit_orders and unfunded > 0 and d < 150 and obs.debt < cfg["max_debt"] \
-            and not c3plan:
+    elif cfg["allow_loans"] and obs.can_edit_orders and unfunded > 0 and cfg["loan_from_day"] <= d < 150 \
+            and obs.debt < cfg["max_debt"] and not c3plan:
         amt = min(unfunded * 1.05, cfg["max_debt"] - obs.debt)
         if amt >= 50_000:
             acts.append(Action("loan", int(amt), reason=f"unfunded high-payback capacity ${unfunded:,.0f}"))
-    elif obs.debt > 0 and unfunded == 0:
+    elif obs.debt > 0 and unfunded == 0 and d >= cfg["repay_from_day"] and \
+            not (c3plan and any(shortfall[k] > 0 and pays(k) for k in (1, 2, 3))):   # fleet still being built
         free = obs.cash - (obs.roq * obs.kit_unit + obs.kit_order_cost) * 2 - cfg["cash_buffer"] * 3
         if c3plan:   # keep a kit war-chest; repay only real surplus, in big chunks
             free = obs.cash - (60 * lam_plan * 6 * obs.kit_unit + obs.kit_order_cost) - 100_000
             free = free if free > 100_000 else 0
-        if cfg["cash_floor"]:   # never repay below the floor + a margin, so we don't borrow it back (5% fee)
-            free = min(free, obs.cash - cfg["cash_floor"] * 1.5)
+        if cfg["cash_floor"]:   # never repay below floor + 2 kit orders, so we don't borrow it back (5% fee)
+            free = min(free, obs.cash - cfg["cash_floor"] - 2 * (obs.roq * obs.kit_unit + obs.kit_order_cost))
             free = free if free > 50_000 else 0
         if free > 20_000:
             acts.append(Action("repay", int(min(free, obs.debt)), reason="debt costs 20%, cash earns 10%"))
 
-    if cfg["cash_floor"] and cfg["allow_loans"] and obs.can_edit_orders and d < 200 \
+    if cfg["cash_floor"] and cfg["allow_loans"] and obs.can_edit_orders and cfg["loan_from_day"] <= d < 200 \
             and not any(a.kind in ("loan", "repay") for a in acts):
         top_up = min(cfg["cash_floor"] - obs.cash, cfg["max_debt"] - obs.debt)
         if top_up >= 50_000:
@@ -363,8 +372,9 @@ def decide(obs: Observation, cfg: dict | None = None) -> list[Action]:
         roq = 60
     else:
         roq = min(roq, _ceil60(need_rest - have))
-    afford = int((obs.cash - cfg["cash_buffer"] - sum(PRICES[a.station][0] * (a.value - obs.machines[a.station])
-                                                      for a in buys)) / obs.kit_unit)
+    borrowed = sum(a.value for a in acts if a.kind == "loan") - sum(a.value for a in acts if a.kind == "repay")
+    afford = int((obs.cash + borrowed - cfg["cash_buffer"] - sum(PRICES[a.station][0] * (a.value - obs.machines[a.station])
+                                                                 for a in buys)) / obs.kit_unit)
     roq = max(60, min(roq, (afford // 60) * 60))
     if _changed(obs.rop, rop):
         acts.append(Action("rop", rop, reason=f"D {D:.0f} kits/d, lead 4d + {cfg['safety_days']}d safety"))
