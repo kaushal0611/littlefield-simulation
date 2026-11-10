@@ -1,5 +1,5 @@
 {
- "runs": 111,
+ "runs": 112,
  "actions": [
   {
    "ts": "2026-11-09T16:40:56+00:00",
@@ -185,10 +185,20 @@
    "ts": "2026-11-10T09:25:47+00:00",
    "day": 86.0,
    "act": "roq -> 8700  (EOQ 7488, cover 4.5d)"
+  },
+  {
+   "ts": "2026-11-10T09:45:48+00:00",
+   "day": 86.0,
+   "act": "loan -> 108434  (keep $250,000 cash for kit orders)"
+  },
+  {
+   "ts": "2026-11-10T09:45:48+00:00",
+   "day": 86.0,
+   "act": "roq -> 12120  (EOQ 7488, cover 4.5d)"
   }
  ],
  "last_day": 86.0,
- "last": "2026-11-10T09:35:47+00:00 day 86.0 cash $123,566 debt $600,000 machines {1: 10, 2: 6, 3: 4} on-order {1: 0, 2: 1, 3: 0} inv 8460 rop/roq 12060/8700 contract 2 wip 34 rule pri4 edits=on",
+ "last": "2026-11-10T09:45:48+00:00 day 86.0 cash $141,566 debt $600,000 machines {1: 10, 2: 6, 3: 4} on-order {1: 0, 2: 1, 3: 0} inv 8460 rop/roq 12060/8700 contract 2 wip 34 rule pri4 edits=on",
  "alerts": {
   "editsoff": 1794242061.5752845
  },
