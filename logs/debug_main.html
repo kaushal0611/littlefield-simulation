@@ -1,0 +1,58 @@
+<HTML>
+<HEAD>
+<TITLE>Littlefield</TITLE>
+<link rel="stylesheet" href="css/style.css" type="text/css">
+<link rel="stylesheet" href="css/checkAccess.css" type="text/css">
+<link rel="stylesheet" href="css/transactionHistory.css" type="text/css">
+<script type='text/javascript' src='assets/global/plugins/jquery/javascripts/jquery-1.12.1.js'></script>
+<link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="javascripts/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="assets/global/plugins/jquery/css/jquery-ui.css"/>
+<link rel='stylesheet' href='css/jquery.alerts.css' type='text/css' media='screen' />
+<script type='text/javascript' src='javascripts/noty.common.js'></script>
+<script type='text/javascript' src='javascripts/jquery.noty.js'></script>
+<script type='text/javascript' src='javascripts/jquery.alerts.js'></script>
+<script type="text/javascript" src="javascripts/jquery-confirm.js"></script>
+<link rel="stylesheet" type="text/css" href="css/jquery-confirm.css">
+<script type='text/javascript' src='javascripts/themes/default.js'></script>
+<script type='text/javascript' src='javascripts/layouts/top.js'></script>
+<script type="text/javascript" src="javascripts/commonLT.js"></script>
+<script type="text/javascript" src="javascripts/checkAccess.js"></script>
+<script type='text/javascript' src='assets/global/plugins/datatables/media/js/jquery.dataTables.min.js'></script>
+<script type='text/javascript' src='assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js'></script>
+<link rel='stylesheet' type='text/css' href='assets/global/plugins/select2/select2.css'/>
+<link rel='stylesheet' type='text/css' href='assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css'/>
+<link rel='stylesheet' type='text/css' href='assets/global/plugins/bootstrap-select-1.7.5/dist/css/bootstrap-select.min.css'/>
+<link rel='stylesheet' type='text/css' href='assets/global/plugins/jquery-multi-select/css/multi-select.css'/>
+<link rel='stylesheet' type='text/css' href='assets/global/plugins/datatables/extensions/FixedHeader/css/dataTables.fixedHeader.min.css'/>
+<script src='assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js' type='text/javascript'></script>
+<script type='text/javascript' src='assets/global/plugins/bootstrap-select-1.7.5/dist/js/bootstrap-select.min.js'></script>
+<script type='text/javascript' src='assets/global/plugins/select2/select2.min.js'></script>
+<script type='text/javascript' src='assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js'></script>
+<script type='text/javascript' src='assets/global/plugins/downloadXlsx/xlsx.full.min.js'></script>
+<script type='text/javascript' src='assets/global/plugins/downloadXlsx/FileSaver.js'></script>
+<script type='text/javascript' src='assets/global/plugins/downloadXlsx/download.js'></script>
+<script type='text/javascript' src='assets/global/plugins/downloadXlsx/tableExport.js'></script>
+<script type='text/javascript' src='assets/global/plugins/datatables/extensions/FixedHeader/js/dataTables.fixedHeader.min.js'></script>
+<script type="text/javascript" src="javascripts/standing.js"></script>
+<script type='text/javascript' src='javascripts/transactionHistory.js'></script>
+</HEAD>
+<body onload="loadOverallStandingDialog();loadHistoryDialog();loadStatus();loadMap('/lt/shopFloor.html');loadHistory('/lt/history.html');loadButtons('/lt/buttons.html');">
+<input type='hidden' id='teamId' name='teamId' value='sasmoothoperator'/>
+<div id='spinner' style='z-index: 9999999;'></div><div id='wait2' style='display:none;border: 1px solid red;background-color: black; height: 1263px; width: 100%; z-index: 99999999; position: absolute; opacity: 0.2; margin-top: -100px ! important;'></div>
+<div id='header' style='height:20%;'>
+<div class="logo" id="logo"><IMG SRC="/lt/image/littlefield3.jpg">  </div>
+<div class="ltStatus"  id="Ltstatus"> </div>
+</div>
+<div id='content' style='height:68%;'>
+<div class="map" id="map"> </div>
+</div>
+<input type=hidden id=classicInterface value=true />
+<div id='footer' style='height:12%;'>
+<div class="history"  id="history">  </div>
+<div class="button"  id="button">  </div>
+<div id='historyDialog'> </div>
+<div id='overallStandingDialog'> </div>
+<div id='openCashDialog'> </div>
+</div>
+</HTML>
