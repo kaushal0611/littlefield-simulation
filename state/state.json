@@ -1,5 +1,5 @@
 {
- "runs": 157,
+ "runs": 158,
  "actions": [
   {
    "ts": "2026-11-09T16:40:56+00:00",
@@ -277,10 +277,10 @@
    "act": "loan -> 60476  (fund c3 fleet $0)"
   }
  ],
- "last_day": 101.0,
- "last": "2026-11-10T16:56:41+00:00 day 101.0 cash $293,115 debt $1,851,626 machines {1: 16, 2: 7, 3: 9} on-order {1: 1, 2: 0, 3: 1} inv 13200 rop/roq 13920/12120 contract 3 wip 12 rule pri4 edits=on",
+ "last_day": 102.0,
+ "last": "2026-11-10T17:06:41+00:00 day 102.0 cash $309,612 debt $1,851,626 machines {1: 16, 2: 7, 3: 9} on-order {1: 1, 2: 0, 3: 1} inv 12360 rop/roq 13920/12120 contract 3 wip 12 rule pri4 edits=on",
  "alerts": {
   "editsoff": 1794242061.5752845
  },
- "last_summary": 1794326817.5926692
+ "last_summary": 1794330412.2406616
 }
