@@ -463,3 +463,8 @@
 2026-11-10T15:46:40+00:00 day 99.0 cash $345,630 debt $1,697,607 machines {1: 11, 2: 7, 3: 4} on-order {1: 5, 2: 0, 3: 5} inv 6900 rop/roq 13920/12120 contract 2 wip 41 rule pri4 edits=on
   stats: lots=1 jobs_in=44.00 jobs_out=48.00 lead=0.00 rev=0.00 jobq=0.00 q1=745.58 q2=133.16 q3=167.22 u1=1.00 u2=0.90 u3=0.99
   no changes needed
+2026-11-10T15:56:41+00:00 day 99.0 cash $361,534 debt $1,697,607 machines {1: 16, 2: 7, 3: 9} on-order {1: 0, 2: 0, 3: 0} inv 6900 rop/roq 13920/12120 contract 2 wip 41 rule pri4 edits=on
+  stats: lots=1 jobs_in=44.00 jobs_out=48.00 lead=0.00 rev=0.00 jobq=0.00 q1=745.58 q2=133.16 q3=167.22 u1=1.00 u2=0.90 u3=0.99
+  OK   lots -> 3  (fleet ready: split jobs for contract 3) |  Orders Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Jobs released into the factory in the future will be split into 3 lots 
+  OK   wip -> 12  (c3plan, contract 3) |  Orders Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Maximum WIP limit set to 12 jobs. 
+  OK   contract -> 3  (backlog gone, split lots fit the 6h quote) |  Orders Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Orders that arrive in the future will be accepted under the following contract: quoted lead time = 0.25
