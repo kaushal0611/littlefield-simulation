@@ -14,6 +14,8 @@ from __future__ import annotations
 
 import json
 import os
+import re
+import html
 import sys
 import time
 import traceback
@@ -57,6 +59,7 @@ def to_obs(snap) -> Observation:
             for x, y in v.items():
                 out[int(round(x))] = out.get(int(round(x)), 0) + y
     series["JOBOUT"] = out
+    series["LT3"] = {int(round(x)): y for x, y in snap.series.get("JOBT_c3", {}).items() if y > 0}
     can_edit = all(k in snap.controls for k in ("contract", "wip"))
     return Observation(
         day=snap.day, cash=snap.cash, machines=snap.machines, on_order=snap.on_order,
@@ -210,6 +213,15 @@ def main(client=None, now=None) -> int:
         LOG.parent.mkdir(exist_ok=True)
         for k, h in (snap.raw or {}).items():
             (LOG.parent / f"debug_{k}.html").write_text(h)
+        if (snap.raw or {}).get("standing"):
+            try:   # append every team's cash balance, to compare how fast each team is gaining
+                txt = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", snap.raw["standing"])))
+                rows = re.findall(r"(?<!\S)(\d{1,3}) ([A-Za-z0-9_.-]+) (-?[\d,]{3,})(?!\S)", txt)
+                with open(LOG.parent / "standings.csv", "a") as fh:
+                    for rank, team, cash in rows:
+                        fh.write(f"{ts},{snap.day},{rank},{team},{cash.replace(',', '')}\n")
+            except Exception as e:  # noqa: BLE001
+                lines.append(f"  standings parse failed: {e}")
         if not obs.can_edit_orders or not snap.loan_url:
             lines.append(f"  debug: order controls {sorted(k for k in snap.controls if k in ('contract','wip','lots'))}, "
                          f"loan form {'found' if snap.loan_url else 'missing'}; pages saved to logs/debug_*.html")
