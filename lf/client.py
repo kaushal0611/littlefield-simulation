@@ -239,6 +239,7 @@ class LittlefieldClient:
         r.raise_for_status()
         if "teamId" not in r.text and "LTStatus" not in r.text:
             raise GameError("login failed: " + _text(r.text)[:200])
+        self.main_html = r.text
 
     def get(self, path: str, retry=True) -> str:
         time.sleep(self.pause)
@@ -261,6 +262,17 @@ class LittlefieldClient:
     # ---------- read ----------
     def snapshot(self, with_plots=True) -> Snapshot:
         raw = {}
+        if getattr(self, "main_html", ""):
+            raw["main"] = self.main_html
+            # leaderboard: only a URL the game's own main page links to
+            for u in re.findall(r"""(?:window\.open\(\s*|href\s*=\s*|action\s*=\s*)['"]([^'"]*[Ss]tand[^'"]*)['"]""", self.main_html):
+                u = u.split("/Littlefield/")[-1].lstrip("/")
+                if u and not u.startswith("http"):
+                    try:
+                        raw["standing"] = self.get(u)
+                    except Exception:  # noqa: BLE001
+                        pass
+                    break
         raw["status"] = self.get("LTStatus")
         day, cash, team = parse_status(raw["status"])
         cash_html = raw["cash"] = self.get(f"CashStatus?team={self.team}")
