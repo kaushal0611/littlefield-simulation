@@ -7,15 +7,15 @@
 <BR><B>Order Cost: </B> $ 1000.0
 <BR><B>Lead Time:</B> 4 day(s)
 <div class='newUI'>
-<div class='newUILabel'>Reorder Point:</div> <div id='reorderPointValue' class='newUILabelValue floatleft ml10'>13,920 kits
-( 232 batches of 60 )
+<div class='newUILabel'>Reorder Point:</div> <div id='reorderPointValue' class='newUILabelValue floatleft ml10'>10,620 kits
+( 177 batches of 60 )
 </div>
 <input type='button' id='reorderPointFormEdit' onclick='showReorderPointForm()' class='floatleft ml10 buttonStyle blue change' value='Change'/>
 <form class='floatleft ml10' id='reorderPointForm'>
-<input type='number' max='999999' min="1" step="1" oninput="validity.valid||(value='');" id='reorderPoint' value='13920' style='width:100px;'/> 
+<input type='number' max='999999' min="1" step="1" oninput="validity.valid||(value='');" id='reorderPoint' value='10620' style='width:100px;'/> 
 kits
-<input type='button' class="buttonStyle ml10 green"  onclick='updateMaterialValue("MaterialForm","13920","ORDERPOINT","reorderPoint","reorderPointForm","Change order point to ","kits","0","text")' value='Confirm'/>
-<input type='button' class="buttonStyle  red"  onclick='hideReorderPointForm("13920")' value='Cancel'/>
+<input type='button' class="buttonStyle ml10 green"  onclick='updateMaterialValue("MaterialForm","10620","ORDERPOINT","reorderPoint","reorderPointForm","Change order point to ","kits","0","text")' value='Confirm'/>
+<input type='button' class="buttonStyle  red"  onclick='hideReorderPointForm("10620")' value='Cancel'/>
 </form>
 <div class='clearboth'></div>
 </div>
@@ -46,12 +46,12 @@ kits
 <div class='clearboth'> </div>
 <div class='clearboth'> </div>
 <p class='oldUI'>
-<B>Reorder Point:</B> 13,920 kits
-( 232 batches of 60 )
+<B>Reorder Point:</B> 10,620 kits
+( 177 batches of 60 )
 <BR><B>Order Quantity:</B>
 12,120 kits
 ( 202 batches of 60 )
-<P><B>Material order of 12,120  kits due to arrive in 2.90 simulated days
+<P><B>Material order of 12,120  kits due to arrive in 2.60 simulated days
 </p><div class='panelButtonPart'>
 <BR><HR><I>Please click on a button...</I><BR><BR>
 <CENTER>
@@ -69,7 +69,7 @@ onClick="window.open('Plot?data=INV&x=all', 'INV', 'height=600,width=550,scrollb
 <FORM>
 <INPUT type='button' value='close' name='close'
 onClick="window.close()">
-<INPUT type='hidden' id='currentRunningDay' name='currentRunningDay' value='107.15' name='close'
+<INPUT type='hidden' id='currentRunningDay' name='currentRunningDay' value='107.50' name='close'
 </FORM>
 </div>
 </BODY> </HTML>
