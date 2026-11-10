@@ -19,9 +19,9 @@ policy:
   flush_days: 10          # clear the day-50 backlog over ~10 days
   wip_days: 0.8           # WIP cap = throughput x 0.8 day
   max_debt: 900000        # raised 10 Nov (was 600k): room for the cash floor below
-  cash_floor: 250000      # borrow to keep >= $250k on hand so kit orders aren't cut for cash
-  safety_days: 1.0        # kit safety stock
+  cash_floor: 150000      # was 250k; >= one kit order (~$122k) so machine buys + kit orders stay allowed
+  safety_days: 0.5        # kit safety stock (was 1.0; 0.5 tested +$10k, debt-financed kits cost 20%/yr)
   rule: pri4              # tester priority: fifo | pri2 | pri4
-  sell_from_day: 200
+  sell_from_day: 230      # was 200; selling later tested +$6k
   no_edit_mode: hold      # if contract/WIP never become editable: stop buying kits, keep cash
   hold_after_day: 55
