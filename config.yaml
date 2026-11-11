@@ -30,6 +30,6 @@ policy:
   cash_floor: 150000      # was 250k; >= one kit order (~$122k) so machine buys + kit orders stay allowed
   safety_days: 0.5        # kit safety stock (was 1.0; 0.5 tested +$10k, debt-financed kits cost 20%/yr)
   rule: pri4              # tester priority: fifo | pri2 | pri4
-  sell_from_day: 230      # was 200; selling later tested +$6k
+  sell_from_day: 250      # was 200; selling later tested +$6k
   no_edit_mode: hold      # if contract/WIP never become editable: stop buying kits, keep cash
   hold_after_day: 55
