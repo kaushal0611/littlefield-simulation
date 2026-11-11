@@ -24,7 +24,7 @@ policy:
   strategy: c3plan        # 10 Nov evening: leaderboard shows contract-3 teams gaining $40-56k/day vs our $9.6k
   c3_lots: 3              # 3 lots of 20 kits per job
   c3_util: 1.0            # size the fleet for peak demand at 100% (sim best)
-  c3_wip: 12              # WIP cap while on contract 3
+  c3_wip: 14              # WIP cap while on contract 3
   c3_wait_for_fleet: true # switch contract + lots only once the new machines have arrived
   c3_fallback_hours: 99   # no automatic fall-back to contract 2
   cash_floor: 150000      # was 250k; >= one kit order (~$122k) so machine buys + kit orders stay allowed
