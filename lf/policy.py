@@ -66,6 +66,7 @@ DEFAULTS = dict(
     allow_loans=False,
     max_debt=600_000,
     low_frac_prior=0.6,        # prior: post-day-180 demand as share of peak
+    low_end=240,               # handout: lower plateau lasts ~1 month after day 180, then falls to ~0 by day 300
     hold_after_day=55,
     no_edit_mode="hold",       # if contract/WIP can't be edited: "hold" cash or "invest" anyway
     contract_mode="c2",        # "c2": c1 -> c2 as before | "best": pick the contract paying most at the predicted lead time
@@ -130,7 +131,7 @@ class Forecaster:
         plateau = [v for d, v in self.clean.items() if 100 <= d <= 180]
         if len(plateau) >= 7:
             self.peak = sum(plateau) / len(plateau)
-        low = [v for d, v in self.clean.items() if 185 <= d <= 240]
+        low = [v for d, v in self.clean.items() if 185 <= d <= cfg["low_end"]]
         self.low = sum(low) / len(low) if len(low) >= 5 else self.peak * cfg["low_frac_prior"]
 
     def rate(self, t: float) -> float:
@@ -138,10 +139,10 @@ class Forecaster:
             r = self.a + self.b * t
         elif t <= 180:
             r = self.peak
-        elif t <= 240:
+        elif t <= self.cfg["low_end"]:
             r = self.low
         else:
-            r = self.low * max(0.0, (GAME_END - t) / 60.0)
+            r = self.low * max(0.0, (GAME_END - t) / (GAME_END - self.cfg["low_end"]))
         # if we have clean recent data near t, trust it over the curve
         if self.recent_mean is not None and abs(t - self.day) <= 3 and t > 90:
             r = self.recent_mean
@@ -216,7 +217,8 @@ def decide(obs: Observation, cfg: dict | None = None) -> list[Action]:
         c3cap = int(max(cfg["min_wip"] // 2, round(mu_now * cfg["late_wip_days"]))) if late else cfg["c3_wip"]
         cap = (c3cap if want_c == 3 else int(max(cfg["min_wip"], round(mu_now * cfg["wip_days"])))) \
             if flushed else int(max(cfg["min_wip"], round(mu_now * cfg["wip_days"])))
-        if abs(cap - obs.wip_limit) >= max(2, 0.12 * obs.wip_limit):
+        exact = flushed and want_c == 3 and not late          # fixed c3 cap: apply it exactly
+        if (cap != obs.wip_limit) if exact else abs(cap - obs.wip_limit) >= max(2, 0.12 * obs.wip_limit):
             acts.append(Action("wip", cap, reason=f"c3plan, contract {want_c}"))
         if want_c != contract:
             why = "backlog gone, split lots fit the 6h quote" if want_c == 3 else \
@@ -292,7 +294,7 @@ def decide(obs: Observation, cfg: dict | None = None) -> list[Action]:
                    if pays(k) and obs.on_order.get(k, 0) == 0)          # only what can be bought this run
         reserve = 60 * lam_plan * 6 * obs.kit_unit + obs.kit_order_cost + 5 * cfg["cash_buffer"]   # ~6 days of kits
         loan = min(cost + reserve - obs.cash, cfg["max_debt"] - obs.debt)
-        if loan >= 50_000:
+        if loan >= 50_000 and cost > 0:      # kit top-ups are left to cash_floor (each loan costs a 5% fee)
             acts.append(Action("loan", int(loan), reason=f"fund c3 fleet ${cost:,.0f}"))
             spend_left = min(cfg["max_spend_per_run"], obs.cash + loan - reserve)
     # buy one at a time on the most loaded station, so a cash limit hits the
