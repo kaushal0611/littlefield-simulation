@@ -1010,3 +1010,6 @@
 2026-11-11T21:08:45+00:00 day 160.0 cash $416,090 debt $284,682 machines {1: 17, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 2820 rop/roq 10620/12120 contract 3 wip 13 rule pri4 edits=on
   stats: lots=3 jobs_in=44.00 jobs_out=40.00 lead=0.29 rev=1190.34 jobq=0.00 q1=33.06 q2=11.57 q3=90.18 u1=0.81 u2=0.71 u3=0.94
   no changes needed
+2026-11-11T21:18:45+00:00 day 161.0 cash $430,550 debt $284,682 machines {1: 17, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 12660 rop/roq 10620/12120 contract 3 wip 13 rule pri4 edits=on
+  stats: lots=3 jobs_in=38.00 jobs_out=40.00 lead=0.28 rev=1248.97 jobq=0.00 q1=43.30 q2=18.23 q3=78.38 u1=0.82 u2=0.74 u3=0.80
+  no changes needed
