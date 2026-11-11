@@ -782,3 +782,6 @@
 2026-11-11T08:47:56+00:00 day 134.0 cash $400,440 debt $998,880 machines {1: 17, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 7140 rop/roq 10620/12120 contract 3 wip 14 rule pri4 edits=on
   stats: lots=3 jobs_in=42.00 jobs_out=41.00 lead=0.31 rev=1132.48 jobq=0.00 q1=39.80 q2=23.80 q3=100.22 u1=0.81 u2=0.75 u3=0.97
   no changes needed
+2026-11-11T08:57:55+00:00 day 135.0 cash $411,056 debt $998,880 machines {1: 17, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 4380 rop/roq 10620/12120 contract 3 wip 14 rule pri4 edits=on
+  stats: lots=3 jobs_in=46.00 jobs_out=47.00 lead=0.27 rev=1280.32 jobq=0.00 q1=32.53 q2=29.35 q3=62.72 u1=0.86 u2=0.80 u3=0.77
+  OK   wip -> 13  (c3plan, contract 3) |  Orders Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Maximum WIP limit set to 13 jobs. 
