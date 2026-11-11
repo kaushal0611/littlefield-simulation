@@ -914,3 +914,6 @@
 2026-11-11T15:58:19+00:00 day 149.0 cash $446,217 debt $637,834 machines {1: 17, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 6180 rop/roq 10620/12120 contract 3 wip 13 rule pri4 edits=on
   stats: lots=3 jobs_in=53.00 jobs_out=50.00 lead=0.25 rev=1387.93 jobq=0.00 q1=71.78 q2=37.19 q3=7.86 u1=0.97 u2=0.89 u3=0.65
   OK   repay -> 51817  (debt costs 20%, cash earns 10%) |  Loan Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Debt was decreased by $51,817. Total debt is now $586,017 
+2026-11-11T16:08:20+00:00 day 150.0 cash $418,204 debt $586,017 machines {1: 17, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 3540 rop/roq 10620/12120 contract 3 wip 13 rule pri4 edits=on
+  stats: lots=3 jobs_in=44.00 jobs_out=44.00 lead=0.23 rev=1466.41 jobq=0.00 q1=35.37 q2=35.16 q3=9.39 u1=0.91 u2=0.82 u3=0.60
+  no changes needed
