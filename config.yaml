@@ -31,6 +31,6 @@ policy:
   safety_days: 0.5        # kit safety stock (was 1.0; 0.5 tested +$10k, debt-financed kits cost 20%/yr)
   rule: pri4              # tester priority: fifo | pri2 | pri4
   sell_from_day: 296      # was 200; selling later tested +$6k
-  low_end: 270            # demand flat ~37/day at day 248; forecast holds it to 270, then falls to 0 at 300 (kit run-down)
+  low_end: 252            # final fall started ~day 252: our last 3d 27/day (-25%), league median gain -50% since day 251
   no_edit_mode: hold      # if contract/WIP never become editable: stop buying kits, keep cash
   hold_after_day: 55
