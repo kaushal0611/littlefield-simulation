@@ -345,7 +345,7 @@ def decide(obs: Observation, cfg: dict | None = None) -> list[Action]:
     # ---- sell surplus late in the game
     if d >= cfg["sell_from_day"]:
         for k in (1, 2, 3):
-            keep = max(1, math.ceil(lam_life * h[k] / (24 * u) + 1e-9) + 1)
+            keep = 1 if d >= 296 else max(1, math.ceil(lam_life * h[k] / (24 * u) + 1e-9) + 1)
             if obs.machines[k] > keep and obs.on_order.get(k, 0) == 0 and backlog_h[k] < 24:
                 acts.append(Action("sell", keep, station=k,
                                    reason=f"life demand needs {keep - 1}+1 spare"))
