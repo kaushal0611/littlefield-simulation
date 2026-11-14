@@ -347,7 +347,7 @@ def decide(obs: Observation, cfg: dict | None = None) -> list[Action]:
             acts.append(Action("loan", int(top_up), reason=f"keep ${cfg['cash_floor']:,.0f} cash for kit orders"))
     # ---- trim machines that even a burst cannot use (manual targets from config), before the final sell-down
     trim = cfg.get("trim_to") or {}
-    if cfg.get("trim_from_day") is not None and cfg["trim_from_day"] <= d < 296:
+    if cfg.get("trim_from_day") is not None and cfg["trim_from_day"] <= d < 297.5:
         for k in (1, 2, 3):
             t = trim.get(k, trim.get(str(k)))
             if t is not None and obs.machines[k] > int(t) and obs.on_order.get(k, 0) == 0:
@@ -356,7 +356,7 @@ def decide(obs: Observation, cfg: dict | None = None) -> list[Action]:
     # ---- sell surplus late in the game
     if d >= cfg["sell_from_day"]:
         for k in (1, 2, 3):
-            keep = 1 if d >= 296 else max(1, math.ceil(lam_life * h[k] / (24 * u) + 1e-9) + 1)
+            keep = 1 if d >= 297.5 else max(1, math.ceil(lam_life * h[k] / (24 * u) + 1e-9) + 1)
             if obs.machines[k] > keep and obs.on_order.get(k, 0) == 0 and backlog_h[k] < 24:
                 acts.append(Action("sell", keep, station=k,
                                    reason=f"life demand needs {keep - 1}+1 spare"))

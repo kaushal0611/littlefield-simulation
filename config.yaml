@@ -30,7 +30,7 @@ policy:
   cash_floor: 150000      # was 250k; >= one kit order (~$122k) so machine buys + kit orders stay allowed
   safety_days: 0.5        # kit safety stock (was 1.0; 0.5 tested +$10k, debt-financed kits cost 20%/yr)
   rule: pri4              # tester priority: fifo | pri2 | pri4
-  sell_from_day: 296      # was 200; selling later tested +$6k
+  sell_from_day: 297.5    # final sell-down to 1/station at day 297.5 (~8:00 pm IST); +~$21k of orders vs 296, ~2 days of margin before the 299.5 stop
   trim_from_day: 289       # sell stuffers that even a 4-job burst (12 lots) cannot use; also tests the sell path before day 296
   trim_to: {1: 13}
   low_end: 285            # demand flat ~25/day since day 256; forecast holds 25 until 285, then falls to 0 at 300
