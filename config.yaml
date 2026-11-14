@@ -32,6 +32,6 @@ policy:
   rule: pri4              # tester priority: fifo | pri2 | pri4
   sell_from_day: 296      # was 200; selling later tested +$6k
   low_end: 285            # demand flat ~25/day since day 256; forecast holds 25 until 285, then falls to 0 at 300
-  low_rate: 25            # override: current demand level (the measured average still includes the ~37/day plateau)
+  low_rate: 20            # override: demand ~20/day at day 277 (was 25 at day 268)
   no_edit_mode: hold      # if contract/WIP never become editable: stop buying kits, keep cash
   hold_after_day: 55
