@@ -2094,3 +2094,7 @@
 2026-11-14T07:42:46+00:00 day 282.0 cash $3,167,588 debt $0 machines {1: 17, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 4620 rop/roq 5460/600 contract 3 wip 13 rule pri4 edits=on
   stats: lots=3 jobs_in=17.00 jobs_out=22.00 lead=0.21 rev=1445.47 jobq=0.00 q1=0.00 q2=5.13 q3=0.00 u1=0.35 u2=0.37 u3=0.32
   no changes needed
+2026-11-14T07:52:45+00:00 day 283.0 cash $3,172,415 debt $0 machines {1: 17, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 3960 rop/roq 5460/600 contract 3 wip 13 rule pri4 edits=on
+  stats: lots=3 jobs_in=11.00 jobs_out=11.00 lead=0.23 rev=1424.00 jobq=0.00 q1=0.00 q2=1.25 q3=0.45 u1=0.24 u2=0.21 u3=0.25
+  OK   rop -> 60  (D 1053 kits/d, lead 4d + 0.5d safety) |  Materials Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Material order point is now 1 x 60 = 60 units 
+  OK   roq -> 60  (EOQ 4635, cover 4.5d) |  Materials Form Littlefield Technologies - CONFIRMATION Processing request... Processing request... Material order quantity is now 1 x 60 = 60 units 
