@@ -66,6 +66,7 @@ DEFAULTS = dict(
     allow_loans=False,
     max_debt=600_000,
     low_frac_prior=0.6,        # prior: post-day-180 demand as share of peak
+    low_rate=None,             # optional override of the measured post-peak level (jobs/day)
     low_end=240,               # handout: lower plateau lasts ~1 month after day 180, then falls to ~0 by day 300
     hold_after_day=55,
     no_edit_mode="hold",       # if contract/WIP can't be edited: "hold" cash or "invest" anyway
@@ -133,6 +134,8 @@ class Forecaster:
             self.peak = sum(plateau) / len(plateau)
         low = [v for d, v in self.clean.items() if 185 <= d <= cfg["low_end"]]
         self.low = sum(low) / len(low) if len(low) >= 5 else self.peak * cfg["low_frac_prior"]
+        if cfg.get("low_rate"):
+            self.low = float(cfg["low_rate"])   # manual override of the post-peak demand level (jobs/day)
 
     def rate(self, t: float) -> float:
         if t <= 90:
