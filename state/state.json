@@ -1,5 +1,5 @@
 {
- "runs": 716,
+ "runs": 717,
  "actions": [
   {
    "ts": "2026-11-09T16:40:56+00:00",
@@ -502,8 +502,8 @@
    "act": "sell S1 -> 13  (trim burst-surplus machines)"
   }
  ],
- "last_day": 290.0,
- "last": "2026-11-14T11:33:10+00:00 day 290.0 cash $3,336,206 debt $0 machines {1: 13, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 4440 rop/roq 60/60 contract 3 wip 13 rule pri4 edits=on",
+ "last_day": 291.0,
+ "last": "2026-11-14T11:43:11+00:00 day 291.0 cash $3,339,668 debt $0 machines {1: 13, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 3540 rop/roq 60/60 contract 3 wip 13 rule pri4 edits=on",
  "alerts": {
   "editsoff": 1794242061.5752845
  },
