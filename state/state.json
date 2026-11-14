@@ -1,5 +1,5 @@
 {
- "runs": 670,
+ "runs": 671,
  "actions": [
   {
    "ts": "2026-11-09T16:40:56+00:00",
@@ -473,9 +473,9 @@
   }
  ],
  "last_day": 275.0,
- "last": "2026-11-14T04:02:46+00:00 day 275.0 cash $3,042,887 debt $0 machines {1: 17, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 4320 rop/roq 7560/7320 contract 3 wip 13 rule pri4 edits=on",
+ "last": "2026-11-14T04:12:45+00:00 day 275.0 cash $3,050,387 debt $0 machines {1: 17, 2: 7, 3: 10} on-order {1: 0, 2: 0, 3: 0} inv 4320 rop/roq 7560/7320 contract 3 wip 13 rule pri4 edits=on",
  "alerts": {
   "editsoff": 1794242061.5752845
  },
- "last_summary": 1794625976.6867497
+ "last_summary": 1794629575.7344296
 }
