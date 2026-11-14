@@ -31,6 +31,8 @@ policy:
   safety_days: 0.5        # kit safety stock (was 1.0; 0.5 tested +$10k, debt-financed kits cost 20%/yr)
   rule: pri4              # tester priority: fifo | pri2 | pri4
   sell_from_day: 296      # was 200; selling later tested +$6k
+  trim_from_day: 289       # sell stuffers that even a 4-job burst (12 lots) cannot use; also tests the sell path before day 296
+  trim_to: {1: 13}
   low_end: 285            # demand flat ~25/day since day 256; forecast holds 25 until 285, then falls to 0 at 300
   low_rate: 16            # override: demand ~16/day at day 280 (25 at 268, 20 at 277)
   no_edit_mode: hold      # if contract/WIP never become editable: stop buying kits, keep cash
